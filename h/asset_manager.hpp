@@ -12,11 +12,11 @@ namespace VeX{
         std::map<std::string, sf::Texture> textures;
     public:
         // Texture functions
-        const sf::Texture& loadTexture(const std::string & name) {
+        const sf::Texture & loadTexture(const std::string & name) {
             return loadTexture(name, Definition::textures[name]);
         }
 
-        const sf::Texture& loadTexture(const std::string & name, const std::string & fileName) {
+        const sf::Texture & loadTexture(const std::string & name, const std::string & fileName) {
             const auto& [texture, isKeyNew] = textures.emplace(name, sf::Texture());
 
             if (isKeyNew) {
@@ -25,23 +25,39 @@ namespace VeX{
             return texture->second;
         }
 
-        const sf::Texture& reloadTexture(const std::string & name) {
+        const sf::Texture & reloadTexture(const std::string & name) {
             return reloadTexture(name, Definition::textures[name]);
         }
 
-        const sf::Texture& reloadTexture(const std::string & name, const std::string & fileName) {
+        const sf::Texture & reloadTexture(const std::string & name, const std::string & fileName) {
             sf::Texture texture;
             texture.loadFromFile(fileName);
             return textures[name] = std::move(texture); //Could throw error on wrong name?
         }
 
-        const sf::Texture& getTexture(const std::string & name) const {
+        const sf::Texture & getTexture(const std::string & name) const {
             const auto& item = textures.find(name);
 
             if (item == textures.end()) {
                 std::cerr << "[VeX WARNING] Unable to get asset of type 'Texture' with name '" << name << "'.\n";
             }
             return item->second; //Second is the value, first should be the key
+        }
+
+        const sf::Texture & loadTextureFromImage(const std::string & name, const sf::Image & image){
+            const auto& [texture, isKeyNew] = textures.emplace(name, sf::Texture());
+
+            if (isKeyNew) {
+                texture->second.loadFromImage(image);
+            }
+            return texture->second;
+        }
+
+        //Texture factory
+        const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, const sf::Color & color){
+            sf::Image image;
+            image.create(dimensions.x, dimensions.y, color);
+            return loadTextureFromImage(name, image);
         }
     };
 

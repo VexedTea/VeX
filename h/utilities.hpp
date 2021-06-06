@@ -2,6 +2,14 @@
 #define __VECTOR_OPERATORS_HPP__
 
 #include <iostream>
+// #include <array>
+// #include <algorithm>
+
+// using HsvColor = std::array<float, 3>;
+
+// HsvColor rgbToHsvColorFraction(const sf::Color & rgb){
+    
+// }
 
 template<typename T>
 inline sf::Vector2f operator/(

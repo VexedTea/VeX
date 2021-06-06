@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "vector_operators.hpp"
+#include "utilities.hpp"
 
 using TextureMap = std::map<std::string, std::string>;
 
@@ -16,7 +16,7 @@ namespace Definition {
 
     constexpr auto offScreenLimitMult = 100.f;
 
-    constexpr auto defaultMaxParticleCount = 100;
+    constexpr auto defaultMaxParticleCount = 1000;
     const sf::Vector2f defaultParticleMotionDampening = {0.1,0.1};
 
     constexpr float gravitationalConstant = 

@@ -3,24 +3,26 @@
 
 #include "SFML/Graphics.hpp"
 
-#include "particle_system.hpp"
+#include "particle_system_factory.hpp"
 #include "definitions.hpp"
+
+#include "color_gradient.hpp"
 
 namespace VeX {
 
     class Particle_Demo : public State{
     private:
         Engine & engine;
-        ParticleSystem particleSystem;
+        Particle_System_Ptr particleSystem;
 
     public:
         Particle_Demo(Engine & engine):
             engine(engine),
-            particleSystem(engine, 10'000)
+            particleSystem(Particle_System_Factory::makePixelSizedParticleSystem(engine, Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 32'000))
         {}
 
         void init(){
-            particleSystem.setPosition({Definition::screenWidth/2, Definition::screenHeight/2});
+            particleSystem->setPosition({Definition::screenWidth/2, Definition::screenHeight/2});
         }
 
         void handleInput(){
@@ -37,13 +39,13 @@ namespace VeX {
         }
 
         void update(float delta){
-            particleSystem.update(delta);
+            particleSystem->update(delta);
         }
 
         void draw(float delta){
             engine.window.clear();
 
-            particleSystem.draw(delta);
+            particleSystem->draw(delta);
 
             engine.window.display();
         }

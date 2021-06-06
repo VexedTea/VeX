@@ -10,12 +10,16 @@
 #include <cmath>
 #include "engine.hpp"
 #include "definitions.hpp"
+#include "color_gradient.hpp"
 
 namespace VeX{
 
     class Particle{
     private:
         Engine & engine;
+        sf::Color color;
+        Color_Gradient colors;
+        bool usingGradient;
         std::string textureName;
         sf::Vector2f motionDampening;
 
@@ -25,12 +29,15 @@ namespace VeX{
     public:
         bool deleteMe;
 
-        Particle(Engine & engine, const sf::Vector2f & _position, 
+        Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors, const bool & usingGradient,
             const std::string & textureName="defaultParticle", const sf::Vector2f & scale={1,1},
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
             const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
             const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
             engine(engine),
+            color(color),
+            colors(colors),
+            usingGradient(usingGradient),
             textureName(textureName),
             motionDampening(motionDampening),
             deleteMe(false)
@@ -44,6 +51,7 @@ namespace VeX{
                         -randomStartVelocityAmp.y + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(randomStartVelocityAmp.y*2)))};
 
             sprite.setTexture(engine.loadTexture(textureName));
+            sprite.setColor(color);
             sprite.setPosition(position);
             sprite.setScale(scale);
         }
@@ -65,6 +73,10 @@ namespace VeX{
         }
 
         void draw(const float &){
+            if(usingGradient){
+                sprite.setColor(colors.getColorAt(sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) / 3500));
+                //std::cout << "speed: " << sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) << "\n";
+            }
             engine.window.draw(sprite);
         }
 
