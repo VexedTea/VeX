@@ -2,6 +2,7 @@
 #define __PARTICLE_SYSTEM_HPP__
 
 #include <memory>
+#include <iostream>
 
 #include "SFML/Graphics.hpp"
 #include "particle.hpp"
@@ -16,7 +17,7 @@ namespace VeX{
 
         std::vector<std::unique_ptr<Particle>> particles;
     public:
-        ParticleSystem(Engine & engine, const unsigned int & maxParticleCount=100):
+        ParticleSystem(Engine & engine, const unsigned int & maxParticleCount=Definition::defaultMaxParticleCount):
             engine(engine),
             maxParticleCount{maxParticleCount},
             position{sf::Vector2f(0,0)}
@@ -27,6 +28,7 @@ namespace VeX{
             position = {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)};
 
             if(particles.size() < maxParticleCount){
+                //for(unsigned int i=particles.size(); i<maxParticleCount; i++)//Spawn all remaining particles at once
                 particles.push_back(std::make_unique<Particle>(engine, position));
                 //std::cout << "New particle made as: " << position.x << " " << position.y << "\n";
             }
@@ -43,7 +45,7 @@ namespace VeX{
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->draw(delta);
             }
-            //std::cout << particles.size() << "\n";
+            //std::cout << particles.size() << "\r";
         }
 
         void setPosition(const sf::Vector2f & newPos){

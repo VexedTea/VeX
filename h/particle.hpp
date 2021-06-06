@@ -17,6 +17,7 @@ namespace VeX{
     private:
         Engine & engine;
         std::string textureName;
+        sf::Vector2f motionDampening;
 
         sf::Vector2f position;
         sf::Sprite sprite;
@@ -27,9 +28,11 @@ namespace VeX{
         Particle(Engine & engine, const sf::Vector2f & _position, 
             const std::string & textureName="defaultParticle", const sf::Vector2f & scale={1,1},
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
-            const sf::Vector2f & randomStartPositionOffset={100.f,100.f}):
+            const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
+            const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
             engine(engine),
             textureName(textureName),
+            motionDampening(motionDampening),
             deleteMe(false)
         {
             position = {
@@ -51,11 +54,12 @@ namespace VeX{
             // if(velocity.y > maxVelocity){velocity.y=maxVelocity;}
             // if(velocity.x < -maxVelocity){velocity.x=-maxVelocity;}
             // if(velocity.x < -maxVelocity){velocity.y=-maxVelocity;}
-            if(position.x > 10.1 * Definition::screenWidth || position.x < -1.1 * Definition::screenWidth || 
-                position.y > 10.1 * Definition::screenHeight || position.y < -1.1 * Definition::screenHeight){
+            if(position.x > (1+Definition::offScreenLimitMult) * Definition::screenWidth || position.x < -Definition::offScreenLimitMult * Definition::screenWidth || 
+                position.y > (1+Definition::offScreenLimitMult) * Definition::screenHeight || position.y < -Definition::offScreenLimitMult * Definition::screenHeight){
                 deleteMe = true;
                 //std::cout << position.x << " " << position.y << "\n";
             }
+            velocity = velocity / ((motionDampening * delta)+1);
             position += velocity * delta;
             sprite.setPosition(position);
         }
@@ -68,7 +72,7 @@ namespace VeX{
             if(targetPos == position){return;}
             float magnitude = sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
             sf::Vector2f direction = (targetPos - position)/magnitude;
-            float v = Definition::gravitationalConstant * delta * (0.0005 * pow(magnitude, 1.5)) / magnitude;
+            float v = -0.4*magnitude + (Definition::gravitationalConstant * delta * pow(magnitude, 1.2)) + 3;
             velocity += direction * v;
 
             //std::cout << "position: " << position << "\ttargetPos: " << targetPos << "\tmagnitude: " << magnitude << "\tdirection: " << direction << "    \tv: " << v << "\tvelocity: " << velocity << "\n";

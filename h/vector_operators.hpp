@@ -42,6 +42,14 @@ inline sf::Vector2f operator/(
     return {leftX / right.x, leftY / right.y};
 }
 
+inline sf::Vector2f operator+(
+    const sf::Vector2f& left,
+    float right
+) {
+    return {left.x + right, left.y + right};
+}
+
+
 std::ostream& operator<<(std::ostream &os, const sf::Vector2f & vec){
     os << "(" << vec.x <<", "<< vec.y << ")";
     return os;

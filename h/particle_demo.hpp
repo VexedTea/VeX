@@ -16,7 +16,7 @@ namespace VeX {
     public:
         Particle_Demo(Engine & engine):
             engine(engine),
-            particleSystem(engine, 10000)
+            particleSystem(engine, 10'000)
         {}
 
         void init(){
