@@ -18,7 +18,7 @@ namespace VeX{
             }
         }
 
-        sf::Color getColorAt(float fraction){
+        sf::Color getColorAt(float fraction, bool debug=false)const{
             if(fraction <= 0){ //Here it's going to fully be the first color in the gradient anyways
                 //std::cout << fraction << " \n";
                 return colors[0];
@@ -26,14 +26,14 @@ namespace VeX{
                 //std::cout << fraction << " \n";
                 return colors[colors.size()-1];
             }
-            //std::cout << fraction << " ";
-            fraction *= colors.size();
-            //std::cout << fraction << " ";
+            if(debug)std::cout << fraction << " ";
+            fraction *= colors.size()-1;
+            if(debug)std::cout << fraction << " ";
             sf::Color color1 = colors[int(fraction)];
             sf::Color color2 = colors[int(fraction)+1];
-            //std::cout << fraction << " ";
+            if(debug)std::cout << int(fraction) << " ";
             fraction = fraction - int(fraction);
-            //std::cout << fraction << " \n";
+            if(debug)std::cout << fraction << " \n";
             return sf::Color(
                             ((1-fraction) * color1.r) + (fraction * color2.r),
                             ((1-fraction) * color1.g) + (fraction * color2.g),

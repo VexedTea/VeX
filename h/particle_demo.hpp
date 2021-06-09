@@ -19,10 +19,12 @@ namespace VeX {
         Particle_Demo(Engine & engine):
             engine(engine),
             particleSystem(Particle_System_Factory::makePixelSizedParticleSystem(engine, Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 32'000))
+            //particleSystem(Particle_System_Factory::makePixelSizedParticleSystem(engine, {255,255,255}, 32'000))
         {}
 
         void init(){
-            particleSystem->setPosition({Definition::screenWidth/2, Definition::screenHeight/2});
+            particleSystem->setPosition({Definition::screenWidth/2, Definition::screenHeight/2});\
+            //engine.makeRectangleTexture("testGradient", {Definition::screenWidth/2, Definition::screenHeight/2}, Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}));
         }
 
         void handleInput(){
@@ -44,6 +46,10 @@ namespace VeX {
 
         void draw(float delta){
             engine.window.clear();
+
+            // sf::Sprite testGradient(engine.getTexture("testGradient"));
+            // testGradient.setPosition({Definition::screenWidth/4, Definition::screenHeight/4});
+            // engine.window.draw(testGradient);
 
             particleSystem->draw(delta);
 

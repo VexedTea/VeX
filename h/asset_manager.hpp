@@ -2,8 +2,10 @@
 #define __ASSET_MANAGER_HPP__
 
 #include <vector>
+#include <array>
 
 #include "definitions.hpp"
+#include "color_gradient.hpp"
 
 namespace VeX{
 
@@ -57,6 +59,35 @@ namespace VeX{
         const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, const sf::Color & color){
             sf::Image image;
             image.create(dimensions.x, dimensions.y, color);
+            return loadTextureFromImage(name, image);
+        }
+
+        const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, 
+                                                const Color_Gradient & colors, const std::string & gradientDirection="LR"){
+            sf::Image image;
+            uint8_t* pixels = new uint8_t[dimensions.x*dimensions.y*4]; //Pixels in RGBA with one uint8_t per R, G, B or A.
+            //image.create(dimensions.x, dimensions.y, sf::Color::White);
+            if(gradientDirection == "LR"){
+                for(int i=0; i<dimensions.x; i++){
+                    for(int j=0; j<dimensions.y; j++){
+                        sf::Color color = colors.getColorAt(float(i)/float(dimensions.x));
+                        //if(j==0)std::cout << float(i)/float(dimensions.x) << "\n";
+                        //if(j==0)std::cout << color.toInteger() << "\n";
+                        //if(j==0)std::cout << unsigned(color.r) << " " << unsigned(color.g) << " " << unsigned(color.b) << "\n";
+                        pixels[(i+(j*dimensions.x))*4] = color.r;
+                        pixels[(i+(j*dimensions.x))*4+1] = color.g;
+                        pixels[(i+(j*dimensions.x))*4+2] = color.b;
+                        pixels[(i+(j*dimensions.x))*4+3] = 255;
+                        //std::cout << "i: " << i << " j: " << j << "\n";
+                        //image.setPixel(i, j, color);
+                    }
+                }
+            }else{
+                std::cout << "[VeX WARNING] unknown gradientDirection on a makeRectangleTexture function call.\n";
+                image.create(dimensions.x, dimensions.y, sf::Color::White);
+                return loadTextureFromImage(name, image);
+            }
+            image.create(dimensions.x, dimensions.y, pixels);
             return loadTextureFromImage(name, image);
         }
     };

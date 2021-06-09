@@ -8,7 +8,7 @@
 
 int main(){
     sf::RenderWindow window;
-    window.create(sf::VideoMode(Definition::screenWidth, Definition::screenHeight), "VeX", sf::Style::Close | sf::Style::Titlebar | sf::Style::Fullscreen);
+    window.create(sf::VideoMode(Definition::screenWidth, Definition::screenHeight), "VeX", sf::Style::Close | sf::Style::Titlebar /*| sf::Style::Fullscreen*/);
 
     srand(time(NULL));
 
