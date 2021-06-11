@@ -21,6 +21,7 @@ namespace VeX{
         Color_Gradient colors;
         bool usingGradient;
         std::string textureName;
+        float mass;
         sf::Vector2f motionDampening;
 
         sf::Vector2f position;
@@ -31,6 +32,7 @@ namespace VeX{
 
         Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors, const bool & usingGradient,
             const std::string & textureName="defaultParticle", const sf::Vector2f & scale={1,1},
+            const float & mass=1.f,
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
             const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
             const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
@@ -39,6 +41,7 @@ namespace VeX{
             colors(colors),
             usingGradient(usingGradient),
             textureName(textureName),
+            mass(mass),
             motionDampening(motionDampening),
             deleteMe(false)
         {
@@ -88,6 +91,10 @@ namespace VeX{
             velocity += direction * v;
 
             //std::cout << "position: " << position << "\ttargetPos: " << targetPos << "\tmagnitude: " << magnitude << "\tdirection: " << direction << "    \tv: " << v << "\tvelocity: " << velocity << "\n";
+        }
+
+        void applyForce(const sf::Vector2f & force){
+            velocity += force / mass;
         }
     };
 

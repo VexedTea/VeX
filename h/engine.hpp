@@ -6,10 +6,11 @@
 #include <map>
 #include "state_machine.hpp"
 #include "asset_manager.hpp"
+#include "input_manager.hpp"
 
 namespace VeX{
 
-    class Engine : public State_Machine, public Asset_Manager{
+    class Engine : public State_Machine, public Asset_Manager, public Input_Manager{
     private:
         const float delta;
         sf::Clock clock; 
@@ -40,6 +41,7 @@ namespace VeX{
                 accumulator += frameTime;
 
                 while (accumulator >= delta) {
+                    updateKeybinds();
                     getActiveState()->handleInput();
                     getActiveState()->update(delta);
                     accumulator -= delta;

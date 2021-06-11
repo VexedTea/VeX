@@ -46,12 +46,10 @@ namespace VeX{
         {}
 
         void update(const float & delta){
-            sf::Vector2i mousePos = sf::Mouse::getPosition(engine.window);
-            position = {static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)};
 
             if(particles.size() < maxParticleCount){
                 for(unsigned int i=particles.size(); i<maxParticleCount; i++)//Spawn all remaining particles at once
-                particles.push_back(std::make_unique<Particle>(engine, position, color, colors, usingGradient, textureName));
+                particles.push_back(std::make_unique<Particle>(engine, position, color, colors, usingGradient, textureName, sf::Vector2f{1,1}, 1.f));
                 //std::cout << "New particle made as: " << position.x << " " << position.y << "\n";
             }
 
@@ -70,12 +68,26 @@ namespace VeX{
             //std::cout << particles.size() << "\r";
         }
 
+        void applyForceToAll(const sf::Vector2f & force){
+            for(unsigned int i=0; i<particles.size(); i++){
+                particles[i]->applyForce(force);
+            }
+        }
+
         void setPosition(const sf::Vector2f & newPos){
             position = newPos;
         }
 
+        void setPosition(const sf::Vector2i & newPos){
+            setPosition(sf::Vector2f{static_cast<float>(newPos.x), static_cast<float>(newPos.y)});
+        }
+
         sf::Vector2f getPosition(){
             return position;
+        }
+
+        void move(const sf::Vector2f & movement){
+            position += movement;
         }
     };
 
