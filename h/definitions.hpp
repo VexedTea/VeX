@@ -25,7 +25,8 @@ namespace Definition {
     //Texture stuff
     std::string textureDirectory = "assets/textures/";
     TextureMap textures {
-        {"defaultParticle", textureDirectory + "particle.png"}
+        {"defaultParticle", textureDirectory + "particle.png"},
+        {"demoImage", textureDirectory + "VexedTea.png"}
     };
 }
 

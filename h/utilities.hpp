@@ -96,8 +96,34 @@ inline sf::Vector2f operator*(
     return {leftX * right.x, leftY * right.y};
 }
 
+template<typename T>
+inline sf::Vector2<T> operator*(
+    const sf::Vector2<T>& left,
+    float right
+) {
+    return {left.x * right, left.y * right};
+}
+
+template<typename T>
+inline sf::Vector2<T> operator*(
+    const sf::Vector2<T>& left,
+    int right
+) {
+    return {left.x * right, left.y * right};
+}
+
 
 std::ostream& operator<<(std::ostream &os, const sf::Vector2f & vec){
+    os << "(" << vec.x <<", "<< vec.y << ")";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const sf::Vector2i & vec){
+    os << "(" << vec.x <<", "<< vec.y << ")";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const sf::Vector2u & vec){
     os << "(" << vec.x <<", "<< vec.y << ")";
     return os;
 }

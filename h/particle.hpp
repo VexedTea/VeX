@@ -30,8 +30,8 @@ namespace VeX{
     public:
         bool deleteMe;
 
-        Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors, const bool & usingGradient,
-            const std::string & textureName="defaultParticle", const sf::Vector2f & scale={1,1},
+        Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors={{sf::Color::White}}, const bool & usingGradient=false,
+            const std::string & textureName="defaultParticle", const sf::IntRect & textureSection={0,0,0,0}, const sf::Vector2f & scale={1,1},
             const float & mass=1.f,
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
             const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
@@ -57,7 +57,28 @@ namespace VeX{
             sprite.setColor(color);
             sprite.setPosition(position);
             sprite.setScale(scale);
+            if(textureSection!=sf::IntRect{0,0,0,0}){
+                //std::cout<<textureSection.width<<"\n";
+                sprite.setTextureRect(textureSection);
+            }
         }
+
+        Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors={{sf::Color::White}}, const bool & usingGradient=false,
+            const std::string & textureName="defaultParticle", const sf::Vector2f & scale={1,1}, const float & mass=1.f,
+            const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
+            const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
+            const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
+                Particle(engine, _position, color, colors, usingGradient, textureName, {0,0,0,0}, scale, mass, randomStartVelocityAmp, randomStartPositionOffset, motionDampening)
+            {}
+
+        Particle(Engine & engine, const sf::Vector2f & _position, const std::string & textureName="defaultParticle", const sf::IntRect & textureSection={0,0,0,0}, 
+            const sf::Vector2f & scale={1,1}, const float & mass=1.f,
+            const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
+            const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
+            const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
+                Particle(engine, _position, sf::Color::White, {{sf::Color::White}}, false, textureName, textureSection, scale, mass, 
+                        randomStartVelocityAmp, randomStartPositionOffset, motionDampening)
+            {}
 
         void update(const float & delta){
             // float maxVelocity = 100;
@@ -95,6 +116,11 @@ namespace VeX{
 
         void applyForce(const sf::Vector2f & force){
             velocity += force / mass;
+        }
+
+        void move(const sf::Vector2f & movement){
+            position += movement;
+            sprite.setPosition(position);
         }
     };
 

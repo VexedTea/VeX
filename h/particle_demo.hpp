@@ -2,6 +2,7 @@
 #define __PARTICLE_DEMO_HPP__
 
 #include "SFML/Graphics.hpp"
+#include <string>
 
 #include "particle_system_factory.hpp"
 #include "definitions.hpp"
@@ -16,15 +17,21 @@ namespace VeX {
         Particle_System_Ptr particleSystem;
 
         bool followingMouse;
+        bool paused;
     public:
         Particle_Demo(Engine & engine):
             engine(engine),
-            particleSystem(Particle_System_Factory::makePixelSizedParticleSystem(engine, Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 32'000)),
+            //particleSystem(Particle_System_Factory::makePixelSizedParticleSystem(engine, Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 32'000)),
             //particleSystem(Particle_System_Factory::makePixelSizedParticleSystem(engine, {255,255,255}, 32'000)),
-            followingMouse(false)
+            particleSystem(std::make_unique<Particle_System>(engine)),
+            followingMouse(false),
+            paused(true)
         {}
 
         void init(){
+            
+            particleSystem = Particle_System_Factory::makeParticleSystemFromImage(engine, Definition::textures["demoImage"], 32'000, sf::Vector2f{Definition::screenWidth/2, Definition::screenHeight/2});
+
             particleSystem->setPosition(sf::Vector2f{Definition::screenWidth/2, Definition::screenHeight/2});
             // engine.makeRectangleTexture("testGradient", {Definition::screenWidth/2, Definition::screenHeight/2}, Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}));
 
@@ -33,7 +40,8 @@ namespace VeX {
             engine.addKeybind("particlePushLeft", sf::Keyboard::Key::Left);
             engine.addKeybind("particlePushDown", sf::Keyboard::Key::Down);
             engine.addKeybind("particlePushRight", sf::Keyboard::Key::Right);
-            engine.addKeybind("toggleMouseFollow", sf::Keyboard::Key::Space);
+            engine.addKeybind("toggleMouseFollow", sf::Keyboard::Key::Enter);
+            engine.addKeybind("pause", sf::Keyboard::Key::Space);
         }
 
         void handleInput(){
@@ -42,17 +50,20 @@ namespace VeX {
                 engine.addState(std::make_unique<VeX::Particle_Demo>(engine), true);
             }
             if(engine.getKeybind("particlePushLeft")->onKeyDown()){
-                particleSystem->move(sf::Vector2f{-1.f,0.f}*100);
+                particleSystem->applyForceToAll(sf::Vector2f{-1.f,0.f}*1000);
             }else if(engine.getKeybind("particlePushRight")->onKeyDown()){
-                particleSystem->move(sf::Vector2f{1.f,0.f}*100);
+                particleSystem->applyForceToAll(sf::Vector2f{1.f,0.f}*1000);
             }
             if(engine.getKeybind("particlePushUp")->onKeyDown()){
-                particleSystem->move(sf::Vector2f{0.f,-1.f}*100);
+                particleSystem->applyForceToAll(sf::Vector2f{0.f,-1.f}*1000);
             }else if(engine.getKeybind("particlePushDown")->onKeyDown()){
-                particleSystem->move(sf::Vector2f{0.f,1.f}*100);
+                particleSystem->applyForceToAll(sf::Vector2f{0.f,1.f}*1000);
             }
             if(engine.getKeybind("toggleMouseFollow")->onKeyDown()){
                 followingMouse = !followingMouse;
+            }
+            if(engine.getKeybind("pause")->onKeyDown()){
+                paused = !paused;
             }
 
             sf::Event event;
@@ -63,8 +74,10 @@ namespace VeX {
         }
 
         void update(float delta){
-            if(followingMouse){particleSystem->setPosition(sf::Mouse::getPosition(engine.window));}
-            particleSystem->update(delta);
+            if(!paused){
+                if(followingMouse){particleSystem->setPosition(sf::Mouse::getPosition(engine.window));}
+                particleSystem->update(delta);
+            }
         }
 
         void draw(float delta){

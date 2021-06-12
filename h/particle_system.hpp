@@ -45,6 +45,16 @@ namespace VeX{
             usingGradient(true)
         {}
 
+        Particle_System(Engine & engine, const unsigned int & maxParticleCount, const sf::Vector2f & position={0,0}):
+            engine(engine),
+            color(sf::Color::White),
+            colors({color}),
+            textureName("defaultParticle"),
+            maxParticleCount{maxParticleCount},
+            position{position},
+            usingGradient(false)
+        {}
+
         void update(const float & delta){
 
             if(particles.size() < maxParticleCount){
@@ -88,6 +98,15 @@ namespace VeX{
 
         void move(const sf::Vector2f & movement){
             position += movement;
+        }
+
+        void addParticle(const sf::Vector2f & _position, const sf::Color & color, const std::string & textureName, const sf::Vector2f & scale={1,1}, const float & mass=1.f){
+            particles.push_back(std::make_unique<Particle>(engine, _position+position, color, Color_Gradient{{sf::Color::White}}, false, textureName, scale, mass));
+        }
+
+        void addParticle(std::unique_ptr<Particle> particle){
+            particle->move(position);
+            particles.push_back(std::move(particle));
         }
     };
 
