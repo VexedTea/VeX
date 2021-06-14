@@ -52,6 +52,10 @@ namespace VeX{
         }
     };
 
+    using Engine_Ptr = std::shared_ptr<Engine>;
+    sf::RenderWindow window;
+    
+    VeX::Engine_Ptr engine = std::make_shared<VeX::Engine>(window); 
 }
 
 #endif // __ENGINE_HPP__

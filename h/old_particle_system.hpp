@@ -1,17 +1,17 @@
-#ifndef __PARTICLE_SYSTEM_HPP__
-#define __PARTICLE_SYSTEM_HPP__
+#ifndef __OLD_PARTICLE_SYSTEM_HPP__
+#define __OLD_PARTICLE_SYSTEM_HPP__
 
 #include <memory>
 #include <iostream>
 
 #include "SFML/Graphics.hpp"
-#include "particle.hpp"
+#include "old_particle.hpp"
 
 namespace VeX{
 
-    class Particle_System{
+    class Old_Particle_System{
     private:
-        Engine & engine;
+        Engine_Ptr engine;
         sf::Color color;
         Color_Gradient colors;
         std::string textureName;
@@ -19,9 +19,9 @@ namespace VeX{
         sf::Vector2f position;
         bool usingGradient;
 
-        std::vector<std::unique_ptr<Particle>> particles;
+        std::vector<std::unique_ptr<Old_Particle>> particles;
     public:
-        Particle_System(Engine & engine, const sf::Color & color=sf::Color::White, 
+        Old_Particle_System(Engine_Ptr engine, const sf::Color & color=sf::Color::White, 
                         const std::string & textureName="defaultParticle", 
                         const unsigned int & maxParticleCount=Definition::defaultMaxParticleCount):
             engine(engine),
@@ -33,7 +33,7 @@ namespace VeX{
             usingGradient(false)
         {}
 
-        Particle_System(Engine & engine, const Color_Gradient & colors, 
+        Old_Particle_System(Engine_Ptr engine, const Color_Gradient & colors, 
                         const std::string & textureName="defaultParticle", 
                         const unsigned int & maxParticleCount=Definition::defaultMaxParticleCount):
             engine(engine),
@@ -45,7 +45,7 @@ namespace VeX{
             usingGradient(true)
         {}
 
-        Particle_System(Engine & engine, const unsigned int & maxParticleCount, const sf::Vector2f & position={0,0}):
+        Old_Particle_System(Engine_Ptr engine, const unsigned int & maxParticleCount, const sf::Vector2f & position={0,0}):
             engine(engine),
             color(sf::Color::White),
             colors({color}),
@@ -55,11 +55,11 @@ namespace VeX{
             usingGradient(false)
         {}
 
-        void update(const float & delta){
+        virtual void update(const float & delta){
 
             if(particles.size() < maxParticleCount){
                 for(unsigned int i=particles.size(); i<maxParticleCount; i++)//Spawn all remaining particles at once
-                particles.push_back(std::make_unique<Particle>(engine, position, color, colors, usingGradient, textureName, sf::Vector2f{1,1}, 1.f));
+                particles.push_back(std::make_unique<Old_Particle>(engine, position, color, colors, usingGradient, textureName, sf::Vector2f{1,1}, 1.f));
                 //std::cout << "New particle made as: " << position.x << " " << position.y << "\n";
             }
 
@@ -101,14 +101,15 @@ namespace VeX{
         }
 
         void addParticle(const sf::Vector2f & _position, const sf::Color & color, const std::string & textureName, const sf::Vector2f & scale={1,1}, const float & mass=1.f){
-            particles.push_back(std::make_unique<Particle>(engine, _position+position, color, Color_Gradient{{sf::Color::White}}, false, textureName, scale, mass));
+            particles.push_back(std::make_unique<Old_Particle>(engine, _position+position, color, Color_Gradient{{sf::Color::White}}, false, textureName, scale, mass));
         }
 
-        void addParticle(std::unique_ptr<Particle> particle){
+        void addParticle(std::unique_ptr<Old_Particle> particle){
             particle->move(position);
             particles.push_back(std::move(particle));
         }
     };
 
 }
-#endif // __PARTICLE_SYSTEM_HPP__
+
+#endif // __OLD_PARTICLE_SYSTEM_HPP__

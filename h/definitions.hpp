@@ -6,6 +6,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "utilities.hpp"
+#include "engine.hpp"
 
 using TextureMap = std::map<std::string, std::string>;
 

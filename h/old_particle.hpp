@@ -1,5 +1,5 @@
-#ifndef __PARTICLE_HPP__
-#define __PARTICLE_HPP__
+#ifndef __OLD_PARTICLE_HPP__
+#define __OLD_PARTICLE_HPP__
 
 #include <iostream>
 
@@ -14,9 +14,9 @@
 
 namespace VeX{
 
-    class Particle{
+    class Old_Particle{
     private:
-        Engine & engine;
+        Engine_Ptr engine;
         sf::Color color;
         Color_Gradient colors;
         bool usingGradient;
@@ -30,8 +30,8 @@ namespace VeX{
     public:
         bool deleteMe;
 
-        Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors={{sf::Color::White}}, const bool & usingGradient=false,
-            const std::string & textureName="defaultParticle", const sf::IntRect & textureSection={0,0,0,0}, const sf::Vector2f & scale={1,1},
+        Old_Particle(Engine_Ptr engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors={{sf::Color::White}}, const bool & usingGradient=false,
+            const std::string & textureName="defaultOld_Particle", const sf::IntRect & textureSection={0,0,0,0}, const sf::Vector2f & scale={1,1},
             const float & mass=1.f,
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
             const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
@@ -53,7 +53,7 @@ namespace VeX{
             velocity = {-randomStartVelocityAmp.x + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(randomStartVelocityAmp.x*2))),
                         -randomStartVelocityAmp.y + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(randomStartVelocityAmp.y*2)))};
 
-            sprite.setTexture(engine.loadTexture(textureName));
+            sprite.setTexture(engine->loadTexture(textureName));
             sprite.setColor(color);
             sprite.setPosition(position);
             sprite.setScale(scale);
@@ -63,20 +63,28 @@ namespace VeX{
             }
         }
 
-        Particle(Engine & engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors={{sf::Color::White}}, const bool & usingGradient=false,
-            const std::string & textureName="defaultParticle", const sf::Vector2f & scale={1,1}, const float & mass=1.f,
+        Old_Particle(Engine_Ptr engine, const sf::Vector2f & _position, const sf::Color & color, const Color_Gradient & colors={{sf::Color::White}}, const bool & usingGradient=false,
+            const std::string & textureName="defaultOld_Particle", const sf::Vector2f & scale={1,1}, const float & mass=1.f,
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
             const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
             const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
-                Particle(engine, _position, color, colors, usingGradient, textureName, {0,0,0,0}, scale, mass, randomStartVelocityAmp, randomStartPositionOffset, motionDampening)
+                Old_Particle(engine, _position, color, colors, usingGradient, textureName, {0,0,0,0}, scale, mass, randomStartVelocityAmp, randomStartPositionOffset, motionDampening)
             {}
 
-        Particle(Engine & engine, const sf::Vector2f & _position, const std::string & textureName="defaultParticle", const sf::IntRect & textureSection={0,0,0,0}, 
+        Old_Particle(Engine_Ptr engine, const sf::Vector2f & _position, const Color_Gradient & colors,
+            const std::string & textureName="defaultOld_Particle", const sf::Vector2f & scale={1,1}, const float & mass=1.f,
+            const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
+            const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
+            const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
+                Old_Particle(engine, _position, sf::Color::White, colors, true, textureName, {0,0,0,0}, scale, mass, randomStartVelocityAmp, randomStartPositionOffset, motionDampening)
+            {}
+
+        Old_Particle(Engine_Ptr engine, const sf::Vector2f & _position, const std::string & textureName="defaultOld_Particle", const sf::IntRect & textureSection={0,0,0,0}, 
             const sf::Vector2f & scale={1,1}, const float & mass=1.f,
             const sf::Vector2f & randomStartVelocityAmp={100.f,100.f},
             const sf::Vector2f & randomStartPositionOffset={100.f,100.f},
             const sf::Vector2f & motionDampening=Definition::defaultParticleMotionDampening):
-                Particle(engine, _position, sf::Color::White, {{sf::Color::White}}, false, textureName, textureSection, scale, mass, 
+                Old_Particle(engine, _position, sf::Color::White, {{sf::Color::White}}, false, textureName, textureSection, scale, mass, 
                         randomStartVelocityAmp, randomStartPositionOffset, motionDampening)
             {}
 
@@ -101,7 +109,7 @@ namespace VeX{
                 sprite.setColor(colors.getColorAt(sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) / 3500));
                 //std::cout << "speed: " << sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) << "\n";
             }
-            engine.window.draw(sprite);
+            engine->window.draw(sprite);
         }
 
         void gravTo(const sf::Vector2f & targetPos, const float & delta){
@@ -126,4 +134,4 @@ namespace VeX{
 
 }
 
-#endif // __PARTICLE_HPP__
+#endif // __OLD_PARTICLE_HPP__
