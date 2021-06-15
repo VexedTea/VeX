@@ -7,23 +7,26 @@
 #include "state_machine.hpp"
 #include "asset_manager.hpp"
 #include "input_manager.hpp"
+#include "settings.hpp"
 
 namespace VeX{
 
     class Engine : public State_Machine, public Asset_Manager, public Input_Manager{
     private:
         const float delta;
-        sf::Clock clock; 
+        sf::Clock clock;
 
     public:
         Engine(sf::RenderWindow & window):
             State_Machine(),
             Asset_Manager(),
             delta(1.f/60.f),
-            window(window)
+            window(window),
+            settings(std::make_unique<Settings>())
         {}
 
         sf::RenderWindow & window;
+        Settings_Ptr settings;
 
         void run(){ //Have a look at the frametiming stuff again
             float newTime, frameTime, interpolation;

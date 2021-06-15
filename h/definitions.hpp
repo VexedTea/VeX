@@ -20,8 +20,7 @@ namespace Definition {
     constexpr auto defaultMaxParticleCount = 1000;
     const sf::Vector2f defaultParticleMotionDampening = {0.1,0.1};
 
-    constexpr float gravitationalConstant = 
-                    9.80665 * 1.f;
+    constexpr float gravitationalConstant = 9.80665 * 1.f;
 
     //Texture stuff
     std::string textureDirectory = "assets/textures/";
