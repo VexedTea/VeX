@@ -11,7 +11,7 @@
 namespace VeX{
 
     class Particle_System : public Object{
-    private:
+    protected:
         std::vector<Particle_Ptr> particles;
     public:
         Particle_System(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
@@ -37,7 +37,7 @@ namespace VeX{
             }
         }
 
-        virtual void update(float delta){
+        virtual void update(float delta)override{
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->gravTo(position, delta);
                 particles[i]->update(delta);
@@ -46,6 +46,12 @@ namespace VeX{
 
         void addParticle(std::unique_ptr<Particle> particle){
             particles.push_back(std::move(particle));
+        }
+
+        void hide()override{
+            for(unsigned int i=0; i<particles.size(); i++){
+                particles[i]->hide();
+            }
         }
     };
 

@@ -15,16 +15,19 @@ namespace VeX{
     private:
         const float delta;
         sf::Clock clock;
-
     public:
         Engine(sf::RenderWindow & window):
             State_Machine(),
             Asset_Manager(),
             delta(1.f/60.f),
+            highestFrameTime(0),
+            startTime(clock.getElapsedTime().asSeconds()),
             window(window),
             settings(std::make_unique<Settings>())
         {}
 
+        float highestFrameTime;//Will introduce proper runtime statistics and stuff sometime
+        float startTime;
         sf::RenderWindow & window;
         Settings_Ptr settings;
 
@@ -37,12 +40,13 @@ namespace VeX{
 
                 newTime = clock.getElapsedTime().asSeconds();
                 frameTime = newTime - currentTime;
+                if(frameTime > highestFrameTime && currentTime - startTime > 30.f){highestFrameTime=frameTime;}
                 if (frameTime > 0.25f) {
-                frameTime = 0.25f;
+                    frameTime = 0.25f;
                 }
                 currentTime = newTime;
                 accumulator += frameTime;
-                std::cout << "Frametime: " << frameTime << "\n";
+                //std::cout << "Frametime: " << frameTime << "\n";
                 while (accumulator >= delta) {
                     updateKeybinds();
                     getActiveState()->handleInput();

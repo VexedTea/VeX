@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <array>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
 #include "definitions.hpp"
 #include "color_gradient.hpp"
@@ -53,6 +55,18 @@ namespace VeX{
                 texture->second.loadFromImage(image);
             }
             return texture->second;
+        }
+
+        std::vector<std::string> loadTexturesFromFolder(const std::string & folderPath){
+            std::vector<std::string> textureNames;
+            for(const auto & entry : fs::directory_iterator(folderPath)){
+                if(entry.path().extension() == ".png" || entry.path().extension() == ".jpg"){
+                    //std::cout << entry.path().string() << std::endl;
+                    loadTexture(entry.path().string(), entry.path().string());
+                    textureNames.push_back(entry.path().string());
+                }
+            }
+            return textureNames;
         }
 
         //Texture factory

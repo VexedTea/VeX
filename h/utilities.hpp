@@ -57,6 +57,13 @@ inline sf::Vector2f operator+(
     return {left.x + right, left.y + right};
 }
 
+inline sf::Vector2f operator-(
+    const sf::Vector2f& left,
+    const sf::Vector2u& right
+) {
+    return {left.x - right.x, left.y - right.y};
+}
+
 template<typename T>
 inline sf::Vector2f operator*(
     const sf::Vector2<T>& left,
@@ -89,6 +96,13 @@ inline sf::Vector2f operator*(
 
 inline sf::Vector2f operator*(
     const sf::Vector2u& left,
+    float right
+) {
+    return {float(left.x) * right, float(left.y) * right};
+}
+
+inline sf::Vector2f operator*(
+    const sf::Vector2u& left,
     const sf::Vector2u& right
 ) {
     const auto leftX{static_cast<float>(left.x)};
@@ -112,6 +126,13 @@ inline sf::Vector2<T> operator*(
     return {left.x * right, left.y * right};
 }
 
+template<typename T>
+inline sf::Vector2f operator/(
+    const sf::Vector2<T>& left,
+    float right
+) {
+    return {left.x / right, left.y / right};
+}
 
 std::ostream& operator<<(std::ostream &os, const sf::Vector2f & vec){
     os << "(" << vec.x <<", "<< vec.y << ")";

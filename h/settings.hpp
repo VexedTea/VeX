@@ -11,8 +11,9 @@ namespace VeX{
             screenWidth(Definition::screenWidth),
             screenHeight(Definition::screenHeight),
             gravity(Definition::gravitationalConstant),
-            maxParticleCount(30'000),
-            currentParticleCount(0)
+            maxParticleCount(32'000),
+            currentParticleCount(0),
+            defaultParticleMotionDampening(Definition::defaultParticleMotionDampening)
         {
             //Config loading stuff soon™
         }
@@ -22,6 +23,7 @@ namespace VeX{
         float gravity;
         unsigned int maxParticleCount;
         unsigned int currentParticleCount;
+        sf::Vector2f defaultParticleMotionDampening;
     };
 
     using Settings_Ptr = std::unique_ptr<Settings>;

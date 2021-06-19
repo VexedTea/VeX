@@ -14,12 +14,17 @@ namespace VeX{
         sf::Vector2f velocity;
         float mass;
         sf::Vector2f motionDampening;
+
+        bool paused;
+        bool hidden;
     public:
         Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
             position(position),
             velocity(velocity),
             mass(mass),
-            motionDampening(motionDampening)
+            motionDampening(motionDampening),
+            paused(false),
+            hidden(false)
         {}
 
         Object(const sf::Vector2f & position):
@@ -35,16 +40,20 @@ namespace VeX{
         {}
 
         virtual void update(float delta){
-            velocity = velocity / ((motionDampening * delta)+1);
-            position += velocity * delta;
+            if(!paused){
+                velocity = velocity / ((motionDampening * delta)+1);
+                position += velocity * delta;
+            }
         }
 
         void gravTo(const sf::Vector2f & targetPos, float delta){
-            if(targetPos == position){return;}
-            float magnitude = sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
-            sf::Vector2f direction = (targetPos - position)/magnitude;
-            float v = -0.4*magnitude + (Definition::gravitationalConstant * delta * pow(magnitude, 1.2)) + 3;
-            velocity += direction * v;
+            if(!paused){
+                if(targetPos == position){return;}
+                float magnitude = sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
+                sf::Vector2f direction = (targetPos - position)/magnitude;
+                float v = -0.4*magnitude + (engine->settings->gravity * delta * pow(magnitude, 1.2)) + 3;
+                velocity += direction * v;
+            }
         }
 
         void setPosition(const sf::Vector2f & newPos){
@@ -75,6 +84,25 @@ namespace VeX{
             return velocity;
         }
         
+        void pause(){
+            paused = true;
+        }
+
+        void unpause(){
+            paused = false;
+        }
+
+        virtual void hide(){
+            hidden = true;
+        }
+
+        void unhide(){
+            hidden = false;
+        }
+
+        bool isAt(const sf::Vector2f & targetPos, float range=1.f){
+            return range > sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
+        }
     };
 
 } // namespace VeX

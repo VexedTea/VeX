@@ -34,8 +34,10 @@ namespace VeX{
         {}
 
         virtual void draw(float){
-            sprite.setPosition(position);
-            engine->window.draw(sprite);
+            if(!hidden){
+                sprite.setPosition(position);
+                engine->window.draw(sprite);
+            }
         }
 
         void setTexture(const sf::Texture & texture, const sf::IntRect & textureRect={0,0,0,0}){
@@ -43,6 +45,18 @@ namespace VeX{
             if(textureRect != sf::IntRect{0,0,0,0}){
                 sprite.setTextureRect(textureRect);
             }
+        }
+
+        void setTextureRect(const sf::IntRect & rect){
+            sprite.setTextureRect(rect);
+        }
+
+        sf::IntRect getTextureRect(){
+            return sprite.getTextureRect();
+        }
+
+        void setScale(const sf::Vector2f & newScale){
+            sprite.setScale(newScale);
         }
 
     };
