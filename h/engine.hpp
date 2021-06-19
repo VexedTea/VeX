@@ -42,7 +42,7 @@ namespace VeX{
                 }
                 currentTime = newTime;
                 accumulator += frameTime;
-
+                std::cout << "Frametime: " << frameTime << "\n";
                 while (accumulator >= delta) {
                     updateKeybinds();
                     getActiveState()->handleInput();

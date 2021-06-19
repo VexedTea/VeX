@@ -11,7 +11,7 @@ namespace VeX{
             screenWidth(Definition::screenWidth),
             screenHeight(Definition::screenHeight),
             gravity(Definition::gravitationalConstant),
-            maxParticleCount(3'000),
+            maxParticleCount(30'000),
             currentParticleCount(0)
         {
             //Config loading stuff soon™

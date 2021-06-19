@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 
+#include "speed_gradient_particle.hpp"
 #include "particle_system.hpp"
 #include "engine.hpp"
 
@@ -18,16 +19,21 @@ namespace VeX{
         {}
 
         void init(){
-            engine->makeRectangleTexture("defaultParticle", {1,1}, sf::Color::White);
+            engine->addKeybind("resetState", sf::Keyboard::Key::Backspace);
             particleSystem->setPosition(sf::Vector2f(engine->settings->screenWidth/2, engine->settings->screenHeight/2));
             for(unsigned int i=0; i<engine->settings->maxParticleCount; i++){
-                particleSystem->addParticle(std::make_unique<Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
-                                                                        -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, engine->getTexture("defaultParticle"), Definition::defaultParticleMotionDampening));
+                particleSystem->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
+                                                                        -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
+                                                                        Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
                 engine->settings->currentParticleCount++;
             }
         }
 
         void handleInput(){
+            if(engine->getKeybind("resetState")->onKeyDown()){
+                engine->addState(std::make_unique<VeX::Particle_Demo>(), true);
+            }
+
             sf::Event event;
             while (engine->window.pollEvent(event)){
                 if (event.type == sf::Event::Closed)
