@@ -17,6 +17,13 @@ namespace VeX{
             sprite.setPosition(position);
         }
 
+        Sprite_Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
+            Object(position, velocity, mass, motionDampening),
+            sprite()
+        {
+            sprite.setPosition(position);
+        }
+
         Sprite_Object(const sf::Vector2f & position, const sf::Texture & texture, const sf::Vector2f & velocity, const sf::Vector2f & motionDampening):
             Sprite_Object(position, texture, velocity, 0.f, motionDampening)
         {}

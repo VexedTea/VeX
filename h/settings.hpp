@@ -8,8 +8,8 @@ namespace VeX{
         
     public:
         Settings():
-            screenWidth(Definition::screenWidth),
-            screenHeight(Definition::screenHeight),
+            screenWidth(1280),
+            screenHeight(720),
             gravity(Definition::gravitationalConstant),
             maxParticleCount(32'000),
             currentParticleCount(0),

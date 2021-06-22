@@ -2,6 +2,9 @@
 #define __VECTOR_OPERATORS_HPP__
 
 #include <iostream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 // #include <array>
 // #include <algorithm>
 
@@ -10,6 +13,16 @@
 // HsvColor rgbToHsvColorFraction(const sf::Color & rgb){
     
 // }
+
+std::size_t countFilesInFolder(const std::string & folderPath){
+    std::size_t count;
+    for(const auto & entry : fs::directory_iterator(folderPath)){
+        if(fs::is_regular_file(entry)){
+            count++;
+        }
+    }
+    return count;
+}
 
 template<typename T>
 inline sf::Vector2f operator/(

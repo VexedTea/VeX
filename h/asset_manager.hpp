@@ -8,6 +8,7 @@ namespace fs = std::experimental::filesystem;
 
 #include "definitions.hpp"
 #include "color_gradient.hpp"
+#include "utilities.hpp"
 
 namespace VeX{
 
@@ -59,6 +60,7 @@ namespace VeX{
 
         std::vector<std::string> loadTexturesFromFolder(const std::string & folderPath){
             std::vector<std::string> textureNames;
+            //std::size_t fileCount = countFilesInFolder(folderPath);
             for(const auto & entry : fs::directory_iterator(folderPath)){
                 if(entry.path().extension() == ".png" || entry.path().extension() == ".jpg"){
                     //std::cout << entry.path().string() << std::endl;

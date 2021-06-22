@@ -12,9 +12,6 @@ using TextureMap = std::map<std::string, std::string>;
 
 namespace Definition {
 
-    constexpr auto screenWidth = 2560;
-    constexpr auto screenHeight = 1440;
-
     constexpr auto offScreenLimitMult = 100.f;
 
     constexpr auto defaultMaxParticleCount = 1000;

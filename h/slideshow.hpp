@@ -16,6 +16,19 @@ namespace VeX{
         std::vector<std::unique_ptr<Particle_Image>> images;
         unsigned int activeImageIndex;
         unsigned int prevImageIndex;
+
+        void newRandIndex(unsigned int depth=0){
+            unsigned int newIndex = rand() % images.size();
+            if(newIndex != activeImageIndex){
+                activeImageIndex = newIndex;
+            }else{
+                if(depth<10){
+                    newRandIndex(depth++);
+                }else{
+                    std::cout << "[VeX WARNING] newRandIndex() reached depth 10, returning." << std::endl; //TODO: add engine ostreams for warning, error, info, etc. So we dont have to use cout and change the destination in one place.
+                }
+            }
+        }
     public:
         Slideshow(const std::string & folderPath):
             folderPath{folderPath},
@@ -35,7 +48,7 @@ namespace VeX{
                 images.back()->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
             }
             engine->settings->currentParticleCount += particleCountPerImage*2;
-            activeImageIndex = rand() % images.size();
+            newRandIndex();
 
             images[prevImageIndex]->stop();
             images[prevImageIndex]->hide();
@@ -55,7 +68,7 @@ namespace VeX{
                 images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
                 images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
                 prevImageIndex = activeImageIndex;
-                activeImageIndex = rand() % images.size();
+                newRandIndex();
                 images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)/2.f, double(engine->settings->screenHeight)*1.1));
                 
             }else if(engine->getKeybind("nextLeft")->onKeyDown()){
@@ -65,7 +78,7 @@ namespace VeX{
                 images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
                 images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
                 prevImageIndex = activeImageIndex;
-                activeImageIndex = rand() % images.size();
+                newRandIndex();
                 images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)*1.1, double(engine->settings->screenHeight)/2.f));
                 
             }else if(engine->getKeybind("nextDown")->onKeyDown()){
@@ -75,7 +88,7 @@ namespace VeX{
                 images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
                 images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
                 prevImageIndex = activeImageIndex;
-                activeImageIndex = rand() % images.size();
+                newRandIndex();
                 images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)/2.f, 0.f-(engine->settings->screenHeight/10.f)));
                 
             }else if(engine->getKeybind("nextRight")->onKeyDown()){
@@ -85,7 +98,7 @@ namespace VeX{
                 images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
                 images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
                 prevImageIndex = activeImageIndex;
-                activeImageIndex = rand() % images.size();
+                newRandIndex();
                 images[activeImageIndex]->comeInFrom(sf::Vector2f(0.f-(engine->settings->screenWidth/10.f), double(engine->settings->screenHeight)/2.f));
                 
             }

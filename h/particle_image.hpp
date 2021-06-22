@@ -46,14 +46,14 @@ namespace VeX{
                 patchSize = patchSize * int(sqrt(textureSize.x * textureSize.y / maxParticleCount)+1);
             }
             //std::cout << patchSize<<"\n";
-            for(unsigned int i=patchSize.x; i<textureSize.x; i+=patchSize.x){
-                for(unsigned int j=patchSize.y; j<textureSize.y; j+=patchSize.y){
+            for(unsigned int i=0; i<textureSize.x; i+=patchSize.x){
+                for(unsigned int j=0; j<textureSize.y; j+=patchSize.y){
                     std::unique_ptr<Particle> particle = std::make_unique<Particle>( 
-                        sf::Vector2f(i-patchSize.x,j-patchSize.y)-sf::Vector2f(patchSize.x/2, patchSize.y/2),//CHANGE THIS!!! 
+                        sf::Vector2f(i,j)-sf::Vector2f(patchSize.x/2, patchSize.y/2),//CHANGE THIS!!! 
                         texture, motionDampening
                     );
-                    offsets.push_back(sf::Vector2f(i-patchSize.x,j-patchSize.y)-sf::Vector2f(patchSize.x/2, patchSize.y/2));
-                    particle->setTextureRect(sf::IntRect(i-patchSize.x, j-patchSize.y, patchSize.x, patchSize.y));
+                    offsets.push_back(sf::Vector2f(i,j)-sf::Vector2f(patchSize.x/2, patchSize.y/2));
+                    particle->setTextureRect(sf::IntRect(i, j, patchSize.x, patchSize.y));
                     //std::cout << i-patchSize.x << " " << j-patchSize.y << " " << patchSize.x << " " << patchSize.y << std::endl;
                     //std::cout << "addParticle" << std::endl;
                     addParticle(std::move(particle));
