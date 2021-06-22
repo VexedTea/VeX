@@ -13,6 +13,9 @@
 int main(){
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     VeX::engine->window.create(desktop, "VeX", sf::Style::None /*sf::Style::Close | sf::Style::Titlebar | sf::Style::Fullscreen*/);
+    sf::Image icon;
+    icon.loadFromFile("assets/textures/VexedTea.png");
+    VeX::engine->window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     VeX::engine->settings->screenWidth = desktop.width;
     VeX::engine->settings->screenHeight = desktop.height;
 
