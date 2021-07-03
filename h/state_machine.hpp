@@ -9,17 +9,17 @@
 
 namespace VeX{
 
-    using StatePtr = std::unique_ptr<State>;
+    using State_Ptr = std::unique_ptr<State>;
 
     class State_Machine{
     private:
-        std::stack<StatePtr> statesStack;
-        StatePtr newState;
+        std::stack<State_Ptr> statesStack;
+        State_Ptr newState;
         bool isRemoving;
         bool isAdding;
         bool isReplacing;
     public:
-        void addState(StatePtr state, bool replacing){
+        void addState(State_Ptr state, bool replacing){
             isAdding = true;
             isReplacing = replacing;
             newState = std::move(state);
@@ -29,13 +29,15 @@ namespace VeX{
             isRemoving = true;
         }
 
-        void processStateChanges(){
+        bool processStateChanges(){
+            bool didNotRemove = true;
             if(isRemoving && !statesStack.empty()){
                 statesStack.pop();
                 if(!statesStack.empty()){
                     statesStack.top()->resume();
                 }
                 isRemoving = false;
+                didNotRemove = false;
             }
             if(isAdding){
                 if(!statesStack.empty()){
@@ -50,9 +52,10 @@ namespace VeX{
                 isAdding = false;
                 //printstatesStack();
             }
+            return didNotRemove;
         }
 
-        StatePtr & getActiveState(){
+        State_Ptr & getActiveState(){
             return statesStack.top();
         }
 
@@ -69,7 +72,7 @@ namespace VeX{
         //         return;
         //     }
         
-        //     StatePtr state = statesStack.top();
+        //     State_Ptr state = statesStack.top();
         
         //     // Pop the top element of the stack
         //     statesStack.pop();

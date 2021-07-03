@@ -5,8 +5,11 @@
 #include <vector>
 #include <memory>
 #include <stdlib.h>
+#include <thread>
+#include <mutex>
 
 #include "particle_image.hpp"
+#include "loading_state.hpp"
 
 namespace VeX{
 
@@ -29,6 +32,18 @@ namespace VeX{
                 }
             }
         }
+
+        std::vector<std::string> loadImages(){
+            float progress = 0.f;
+            std::mutex progressMutex;
+            std::vector<std::string> textureNames;
+            engine->runPocketState(std::make_unique<Loading_State>("Loading Images", progress, progressMutex, 
+                [this, &textureNames, &progress, &progressMutex](){
+                    engine->loadTexturesFromFolder(textureNames, folderPath, progress, progressMutex);
+                }
+            ));
+            return textureNames;
+        }
     public:
         Slideshow(const std::string & folderPath):
             folderPath{folderPath},
@@ -38,7 +53,9 @@ namespace VeX{
         {}
         
         void init(){
-            std::vector<std::string> textureNames = engine->loadTexturesFromFolder(folderPath);
+            std::vector<std::string> textureNames = loadImages();
+            std::cout << textureNames[0] << std::endl;
+
             unsigned int particleCountPerImage = engine->settings->maxParticleCount*0.5;
             for(std::string textureName : textureNames){
                 images.push_back(std::move(std::make_unique<Particle_Image>(

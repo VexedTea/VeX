@@ -11,6 +11,7 @@ namespace VeX{
     class Object{
     protected:
         sf::Vector2f position;
+        sf::Vector2f size;
         sf::Vector2f velocity;
         float mass;
         sf::Vector2f motionDampening;
@@ -18,13 +19,18 @@ namespace VeX{
         bool paused;
         bool hidden;
     public:
-        Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
+        Object(const sf::Vector2f & position, const sf::Vector2f & size, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
             position(position),
+            size(size),
             velocity(velocity),
             mass(mass),
             motionDampening(motionDampening),
             paused(false),
             hidden(false)
+        {}
+
+        Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
+            Object(position, {0.f,0.f}, velocity, mass, motionDampening)
         {}
 
         Object(const sf::Vector2f & position):

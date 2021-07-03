@@ -31,38 +31,56 @@ namespace VeX{
         sf::RenderWindow & window;
         Settings_Ptr settings;
 
+        void runOnce(float & newTime, float & frameTime, float & interpolation, float & currentTime, float & accumulator){
+            //std::cout << " newTime: " << newTime << " frameTime: " << frameTime << " interpolation: " << interpolation << " currentTime: " << currentTime << " accumulator: " << accumulator << std::endl;
+            newTime = clock.getElapsedTime().asSeconds();
+            frameTime = newTime - currentTime;
+            // if(frameTime > highestFrameTime && currentTime - startTime > 30.f){highestFrameTime=frameTime;}
+            if (frameTime > 0.25f) {
+                frameTime = 0.25f;
+            }
+            currentTime = newTime;
+            accumulator += frameTime;
+            //std::cout << "Frametime: " << frameTime << "\n";
+            while (accumulator >= delta) {
+                updateKeybinds();
+                getActiveState()->handleInput();
+                getActiveState()->update(delta);
+                accumulator -= delta;
+            }
+            interpolation = accumulator/delta;
+            getActiveState()->draw(interpolation);
+        }
+
         void run(){ //Have a look at the frametiming stuff again
             float newTime, frameTime, interpolation;
             float currentTime = clock.getElapsedTime().asSeconds();
             float accumulator = 0.0f;
             while (window.isOpen()){
+                std::cout << "run" << std::endl;
                 processStateChanges();
-
-                newTime = clock.getElapsedTime().asSeconds();
-                frameTime = newTime - currentTime;
-               // if(frameTime > highestFrameTime && currentTime - startTime > 30.f){highestFrameTime=frameTime;}
-                if (frameTime > 0.25f) {
-                    frameTime = 0.25f;
-                }
-                currentTime = newTime;
-                accumulator += frameTime;
-                //std::cout << "Frametime: " << frameTime << "\n";
-                while (accumulator >= delta) {
-                    updateKeybinds();
-                    getActiveState()->handleInput();
-                    getActiveState()->update(delta);
-                    accumulator -= delta;
-                }
-                interpolation = accumulator/delta;
-                getActiveState()->draw(interpolation);
+                runOnce(newTime, frameTime, interpolation, currentTime, accumulator);
             }
+        }
+
+        void runPocketState(State_Ptr state){
+            addState(std::move(state), false);
+            processStateChanges();
+            float newTime, frameTime, interpolation;
+            float currentTime = clock.getElapsedTime().asSeconds();
+            float accumulator = 0.0f;
+            while (processStateChanges()){
+                std::cout << "run pocket" << std::endl;
+                runOnce(newTime, frameTime, interpolation, currentTime, accumulator);
+            }
+            //std::cout << "end of runPocketState" << std::endl;
         }
     };
 
     using Engine_Ptr = std::shared_ptr<Engine>;
     sf::RenderWindow window;
     
-    VeX::Engine_Ptr engine = std::make_shared<VeX::Engine>(window); 
+    VeX::Engine_Ptr engine = std::make_shared<VeX::Engine>(window);
 }
 
 #endif // __ENGINE_HPP__

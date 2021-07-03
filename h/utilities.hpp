@@ -14,8 +14,8 @@ namespace fs = std::experimental::filesystem;
     
 // }
 
-std::size_t countFilesInFolder(const std::string & folderPath){
-    std::size_t count;
+unsigned int countFilesInFolder(const std::string & folderPath){
+    unsigned int count = 0;
     for(const auto & entry : fs::directory_iterator(folderPath)){
         if(fs::is_regular_file(entry)){
             count++;

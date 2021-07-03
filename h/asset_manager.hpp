@@ -3,12 +3,13 @@
 
 #include <vector>
 #include <array>
+#include <mutex>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
 #include "definitions.hpp"
-#include "color_gradient.hpp"
 #include "utilities.hpp"
+//#include "progress_bar.hpp"
 
 namespace VeX{
 
@@ -58,17 +59,23 @@ namespace VeX{
             return texture->second;
         }
 
-        std::vector<std::string> loadTexturesFromFolder(const std::string & folderPath){
-            std::vector<std::string> textureNames;
-            //std::size_t fileCount = countFilesInFolder(folderPath);
+        void loadTexturesFromFolder(std::vector<std::string> & textureNames, const std::string & folderPath, float & progress, std::mutex & progressMutex){
+            std::unique_lock<std::mutex> progressLock(progressMutex, std::defer_lock);
+            float fileCount = countFilesInFolder(folderPath);
+            float iterator = 0.f;
+            //std::cout << fileCount << std::endl;
             for(const auto & entry : fs::directory_iterator(folderPath)){
                 if(entry.path().extension() == ".png" || entry.path().extension() == ".jpg"){
                     //std::cout << entry.path().string() << std::endl;
                     loadTexture(entry.path().string(), entry.path().string());
                     textureNames.push_back(entry.path().string());
                 }
+                iterator++;
+                progressLock.lock();
+                progress = iterator/fileCount;
+                //std::cout << "[loading thread] progress: " << progress << std::endl;
+                progressLock.unlock();
             }
-            return textureNames;
         }
 
         //Texture factory
