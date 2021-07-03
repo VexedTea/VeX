@@ -1,17 +1,25 @@
 #ifndef __SLIDESHOW_HPP__
 #define __SLIDESHOW_HPP__
 
+#include "SFML/Graphics.hpp"
+
 #include <string>
 #include <vector>
 #include <memory>
 #include <stdlib.h>
 #include <thread>
 #include <mutex>
+#include <functional>
 
 #include "particle_image.hpp"
 #include "loading_state.hpp"
 
 namespace VeX{
+    struct Slide_Transition{
+        std::function<bool()> activator;
+        sf::Vector2f offToPos;
+        sf::Vector2f inFromPos;
+    };
 
     class Slideshow : public State{
     private:
@@ -19,6 +27,7 @@ namespace VeX{
         std::vector<std::unique_ptr<Particle_Image>> images;
         unsigned int activeImageIndex;
         unsigned int prevImageIndex;
+        std::vector<Slide_Transition> slideTransitions;
 
         void newRandIndex(unsigned int depth=0){
             unsigned int newIndex = rand() % images.size();
@@ -43,6 +52,22 @@ namespace VeX{
                 }
             ));
             return textureNames;
+        }
+
+        void handleSlideChanges(){
+            for(Slide_Transition slideTransition : slideTransitions){
+                if(slideTransition.activator()){
+                    images[activeImageIndex]->collapseTo(slideTransition.offToPos);
+                    images[prevImageIndex]->stop();
+                    images[prevImageIndex]->setParticles();
+                    images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
+                    images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
+                    prevImageIndex = activeImageIndex;
+                    newRandIndex();
+                    images[activeImageIndex]->comeInFrom(slideTransition.inFromPos);
+                }
+            }
+                
         }
     public:
         Slideshow(const std::string & folderPath):
@@ -75,50 +100,18 @@ namespace VeX{
             engine->addKeybind("nextLeft", sf::Keyboard::Key::Left);
             engine->addKeybind("nextDown", sf::Keyboard::Key::Down);
             engine->addKeybind("nextRight", sf::Keyboard::Key::Right);
+
+            float screenWidth = engine->settings->screenWidth;
+            float screenHeight = engine->settings->screenHeight;
+            slideTransitions.push_back(Slide_Transition{[]()bool{return engine->getKeybind("nextUp")->onKeyDown();}, sf::Vector2f(screenWidth/2.f, 0.f-(screenHeight/10.f)), sf::Vector2f(screenWidth/2.f, screenHeight*1.1)});
+            slideTransitions.push_back(Slide_Transition{[]()bool{return engine->getKeybind("nextLeft")->onKeyDown();}, sf::Vector2f(0.f-(screenWidth/10.f), screenHeight/2.f), sf::Vector2f(screenWidth*1.1, screenHeight/2.f)});
+            slideTransitions.push_back(Slide_Transition{[]()bool{return engine->getKeybind("nextDown")->onKeyDown();}, sf::Vector2f(screenWidth/2.f, screenHeight*1.1), sf::Vector2f(screenWidth/2.f, 0.f-(screenHeight/10.f))});
+            slideTransitions.push_back(Slide_Transition{[]()bool{return engine->getKeybind("nextRight")->onKeyDown();}, sf::Vector2f(screenWidth*1.1, screenHeight/2.f), sf::Vector2f(0.f-(screenWidth/10.f), screenHeight/2.f)});
         }
         
         void handleInput(){
-            if(engine->getKeybind("nextUp")->onKeyDown()){
-                images[activeImageIndex]->collapseTo(sf::Vector2f(double(engine->settings->screenWidth)/2.f, 0.f-(engine->settings->screenHeight/10.f)));
-                images[prevImageIndex]->stop();
-                images[prevImageIndex]->setParticles();
-                images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
-                images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
-                prevImageIndex = activeImageIndex;
-                newRandIndex();
-                images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)/2.f, double(engine->settings->screenHeight)*1.1));
-                
-            }else if(engine->getKeybind("nextLeft")->onKeyDown()){
-                images[activeImageIndex]->collapseTo(sf::Vector2f(0.f-(engine->settings->screenWidth/10.f), double(engine->settings->screenHeight)/2.f));
-                images[prevImageIndex]->stop();
-                images[prevImageIndex]->setParticles();
-                images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
-                images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
-                prevImageIndex = activeImageIndex;
-                newRandIndex();
-                images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)*1.1, double(engine->settings->screenHeight)/2.f));
-                
-            }else if(engine->getKeybind("nextDown")->onKeyDown()){
-                images[activeImageIndex]->collapseTo(sf::Vector2f(double(engine->settings->screenWidth)/2.f, double(engine->settings->screenHeight)*1.1));
-                images[prevImageIndex]->stop();
-                images[prevImageIndex]->setParticles();
-                images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
-                images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
-                prevImageIndex = activeImageIndex;
-                newRandIndex();
-                images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)/2.f, 0.f-(engine->settings->screenHeight/10.f)));
-                
-            }else if(engine->getKeybind("nextRight")->onKeyDown()){
-                images[activeImageIndex]->collapseTo(sf::Vector2f(double(engine->settings->screenWidth)*1.1, double(engine->settings->screenHeight)/2.f));
-                images[prevImageIndex]->stop();
-                images[prevImageIndex]->setParticles();
-                images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
-                images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
-                prevImageIndex = activeImageIndex;
-                newRandIndex();
-                images[activeImageIndex]->comeInFrom(sf::Vector2f(0.f-(engine->settings->screenWidth/10.f), double(engine->settings->screenHeight)/2.f));
-                
-            }
+
+            handleSlideChanges();
             
             sf::Event event;
             while (engine->window.pollEvent(event)){
