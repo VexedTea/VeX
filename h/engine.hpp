@@ -57,7 +57,7 @@ namespace VeX{
             float currentTime = clock.getElapsedTime().asSeconds();
             float accumulator = 0.0f;
             while (window.isOpen()){
-                std::cout << "run" << std::endl;
+                //std::cout << "run" << std::endl;
                 processStateChanges();
                 runOnce(newTime, frameTime, interpolation, currentTime, accumulator);
             }
@@ -70,7 +70,7 @@ namespace VeX{
             float currentTime = clock.getElapsedTime().asSeconds();
             float accumulator = 0.0f;
             while (processStateChanges()){
-                std::cout << "run pocket" << std::endl;
+                //std::cout << "run pocket" << std::endl;
                 runOnce(newTime, frameTime, interpolation, currentTime, accumulator);
             }
             //std::cout << "end of runPocketState" << std::endl;

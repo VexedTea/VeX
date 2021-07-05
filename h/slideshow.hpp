@@ -10,6 +10,7 @@
 #include <thread>
 #include <mutex>
 #include <functional>
+#include <random>
 
 #include "particle_image.hpp"
 #include "loading_state.hpp"
@@ -19,6 +20,7 @@ namespace VeX{
         std::function<bool()> activator;
         sf::Vector2f offToPos;
         sf::Vector2f inFromPos;
+        bool activated = false;
     };
 
     class Slideshow : public State{
@@ -27,7 +29,11 @@ namespace VeX{
         std::vector<std::unique_ptr<Particle_Image>> images;
         unsigned int activeImageIndex;
         unsigned int prevImageIndex;
+        sf::Time autoSlideChangeTime;
+
         std::vector<Slide_Transition> slideTransitions;
+        sf::Clock clock;
+        sf::Time prevSlideChangeTime;
 
         void newRandIndex(unsigned int depth=0){
             unsigned int newIndex = rand() % images.size();
@@ -55,16 +61,18 @@ namespace VeX{
         }
 
         void handleSlideChanges(){
-            for(Slide_Transition slideTransition : slideTransitions){
-                if(slideTransition.activator()){
-                    images[activeImageIndex]->collapseTo(slideTransition.offToPos);
+            for(unsigned int i=0; i<slideTransitions.size(); i++){
+                if(slideTransitions[i].activator() || slideTransitions[i].activated){
+                    slideTransitions[i].activated = false;
+                    prevSlideChangeTime = clock.getElapsedTime();
+                    images[activeImageIndex]->collapseTo(slideTransitions[i].offToPos);
                     images[prevImageIndex]->stop();
                     images[prevImageIndex]->setParticles();
                     images[prevImageIndex]->setSize({float(engine->settings->screenWidth),float(engine->settings->screenHeight)});
                     images[prevImageIndex]->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
                     prevImageIndex = activeImageIndex;
                     newRandIndex();
-                    images[activeImageIndex]->comeInFrom(slideTransition.inFromPos);
+                    images[activeImageIndex]->comeInFrom(slideTransitions[i].inFromPos);
                 }
             }
                 
@@ -74,7 +82,8 @@ namespace VeX{
             folderPath{folderPath},
             images(),
             activeImageIndex(0),
-            prevImageIndex(0)
+            prevImageIndex(0),
+            autoSlideChangeTime(sf::seconds(10))
         {}
         
         void init(){
@@ -95,6 +104,7 @@ namespace VeX{
             images[prevImageIndex]->stop();
             images[prevImageIndex]->hide();
             images[activeImageIndex]->comeInFrom(sf::Vector2f(double(engine->settings->screenWidth)*1.1, double(engine->settings->screenHeight)/2.f));
+            prevSlideChangeTime = clock.getElapsedTime();
 
             engine->addKeybind("nextUp", sf::Keyboard::Key::Up);
             engine->addKeybind("nextLeft", sf::Keyboard::Key::Left);
@@ -110,7 +120,9 @@ namespace VeX{
         }
         
         void handleInput(){
-
+            if(autoSlideChangeTime <= clock.getElapsedTime() - prevSlideChangeTime){
+                slideTransitions[rand() % slideTransitions.size()].activated = true;
+            }
             handleSlideChanges();
             
             sf::Event event;
