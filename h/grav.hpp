@@ -4,12 +4,16 @@
 #include <vector>
 
 namespace VeX{
+    enum class Mode{default, placing};
 
     class Grav : public State{
     private:
+
+        Mode mode;
         std::vector<Object> bodies;
     public:
         Grav():
+            mode(Mode::default)
             bodies()
         {}
         
