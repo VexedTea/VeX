@@ -13,15 +13,17 @@ namespace VeX{
         unsigned int maxParticleCount;
         float scale;
         std::vector<sf::Vector2f> offsets;
+        unsigned int particleIndex;
         
-        std::function<void(float)> movementFunction = [](float){};
+        std::function<void(unsigned int, float)> movementFunction = [](unsigned int, float){};
     public:
         Particle_Image(const sf::Vector2f & position, const sf::Vector2f & velocity, const sf::Texture & texture, unsigned int maxParticleCount, float mass, const sf::Vector2f & motionDampening):
             Particle_System(position, velocity, mass, motionDampening),
             texture(texture),
             maxParticleCount(maxParticleCount),
             scale(1.f),
-            offsets()
+            offsets(),
+            particleIndex(0)
         {
             setParticles();
         }
@@ -31,9 +33,12 @@ namespace VeX{
         {}
 
         virtual void update(float delta)override{
-            movementFunction(delta);
+            
             for(unsigned int i=0; i<particles.size(); i++){
+                movementFunction(particleIndex, delta);
                 particles[i]->update(delta);
+                // particleIndex++;
+                // if(particleIndex >= particles.size()){particleIndex=0;}
             }
         }
 
@@ -87,14 +92,13 @@ namespace VeX{
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->setVelocity({0.f,0.f});
                 particles[i]->unpause();
+                particles[i]->launchTo(newPos);
             }
-            movementFunction = [this, newPos](float delta){
-                for(unsigned int i=0; i<particles.size(); i++){
-                    particles[i]->gravTo(newPos, delta);
-                    if(particles[i]->isAt(newPos, 75.f)){
-                        particles[i]->pause();
-                        particles[i]->hide();
-                    }
+            movementFunction = [this, newPos](unsigned int index, float ){
+                //particles[index]->gravTo(newPos, delta);
+                if(particles[index]->isAt(newPos, 75.f)){
+                    particles[index]->pause();
+                    particles[index]->hide();
                 }
             };
         }
@@ -103,20 +107,20 @@ namespace VeX{
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->setPosition(fromPos);
                 particles[i]->unpause();
+                particles[i]->launchTo(position + (offsets[i] * scale));
             }
-            movementFunction = [this, fromPos](float delta){
-                for(unsigned int i=0; i<particles.size(); i++){
-                    particles[i]->gravTo(position + (offsets[i] * scale), delta);
-                    if(particles[i]->isAt(position + (offsets[i] * scale), 5.f)){
-                        particles[i]->setPosition(position + (offsets[i] * scale));
-                        particles[i]->pause();
-                    }
+            movementFunction = [this, fromPos](unsigned int index, float ){
+                //particles[index]->gravTo(position + (offsets[index] * scale), delta);
+                if(particles[index]->isAt(position + (offsets[index] * scale), 5.f)){
+                    particles[index]->setPosition(position + (offsets[index] * scale));
+                    particles[index]->pause();
+                    //std::cout << index << std::endl;
                 }
             };
         }
 
         void stop(){
-            movementFunction = [](float){};
+            movementFunction = [](unsigned int, float){};
         }
     };
 

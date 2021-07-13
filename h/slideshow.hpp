@@ -83,7 +83,7 @@ namespace VeX{
             images(),
             activeImageIndex(0),
             prevImageIndex(0),
-            autoSlideChangeTime(sf::seconds(10))
+            autoSlideChangeTime(sf::seconds(10*1000))
         {}
         
         void init(){
@@ -99,7 +99,7 @@ namespace VeX{
                 images.back()->setCenterPosition(sf::Vector2f(engine->settings->screenWidth/2.f, engine->settings->screenHeight/2.f));
             }
             engine->settings->currentParticleCount += particleCountPerImage*2;
-            newRandIndex();
+            newRandIndex(); //CHECK THIS OR SMTH LAST INDEX SEEMS TO CRASH
 
             images[prevImageIndex]->stop();
             images[prevImageIndex]->hide();

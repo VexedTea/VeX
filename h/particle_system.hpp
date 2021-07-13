@@ -15,7 +15,7 @@ namespace VeX{
         std::vector<Particle_Ptr> particles;
     public:
         Particle_System(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
-            Object(position, velocity, mass, motionDampening)//,
+            Object(position, velocity, mass, motionDampening)
             //particles({})
         {}
 
@@ -38,6 +38,7 @@ namespace VeX{
         }
 
         virtual void update(float delta)override{
+            std::cout << "particle system update start" << std::endl;
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->gravTo(position, delta);
                 particles[i]->update(delta);

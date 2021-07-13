@@ -62,6 +62,13 @@ namespace VeX{
             }
         }
 
+        void launchTo(const sf::Vector2f & targetPos){
+            float distance = sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
+            sf::Vector2f direction = (targetPos - position)/distance;
+            float v = distance * motionDampening.x; //Change this
+            velocity += (direction * v);
+        }
+
         void setPosition(const sf::Vector2f & newPos){
             position = newPos;
         }
