@@ -25,6 +25,10 @@ namespace VeX{
         unsigned int maxParticleCount;
         unsigned int currentParticleCount;
         sf::Vector2f defaultParticleMotionDampening;
+
+        sf::Vector2f getScreenCenter(){
+            return sf::Vector2f(float(screenWidth)/2.f, float(screenHeight)/2.f);
+        }
     };
 
     using Settings_Ptr = std::unique_ptr<Settings>;

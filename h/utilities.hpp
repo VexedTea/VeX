@@ -2,17 +2,25 @@
 #define __VECTOR_OPERATORS_HPP__
 
 #include <iostream>
+#include <cmath>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
-// #include <array>
-// #include <algorithm>
+sf::Vector2f pow(const sf::Vector2f & v, int power){
+    return sf::Vector2f(pow(v.x, power), pow(v.y, power));
+}
 
-// using HsvColor = std::array<float, 3>;
+float distance(const sf::Vector2f & point1, const sf::Vector2f & point2){
+    return sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2));
+}
 
-// HsvColor rgbToHsvColorFraction(const sf::Color & rgb){
-    
-// }
+float magnitude(const sf::Vector2f & v){
+    return distance(v, {0.f,0.f});
+}
+
+sf::Vector2f normalize(const sf::Vector2f & v){
+    return v / magnitude(v);
+}
 
 unsigned int countFilesInFolder(const std::string & folderPath){
     unsigned int count = 0;

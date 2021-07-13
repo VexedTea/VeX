@@ -40,7 +40,7 @@ namespace VeX{
             Sprite_Object(position, texture, {0,0}, 0.f, {0,0})
         {}
 
-        virtual void draw(float){
+        virtual void draw(float)override{
             if(!hidden){
                 sprite.setPosition(position);
                 engine->window.draw(sprite);

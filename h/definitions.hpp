@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "utilities.hpp"
 #include "engine.hpp"
@@ -19,6 +20,8 @@ namespace Definition {
     const sf::Vector2f defaultParticleMotionDampening = {0.1,0.1};
 
     constexpr float gravitationalConstant = 9.80665 * 1.f;
+
+    constexpr float G = 6.674*pow(10, -11);
 
     VeX::Color_Gradient vexGradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}});
 

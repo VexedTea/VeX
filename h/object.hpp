@@ -52,6 +52,8 @@ namespace VeX{
             }
         }
 
+        virtual void draw(float){}
+
         void gravTo(const sf::Vector2f & targetPos, float delta){
             if(!paused){
                 if(targetPos == position){return;}
@@ -95,6 +97,10 @@ namespace VeX{
 
         sf::Vector2f getVelocity(){
             return velocity;
+        }
+
+        float getMass(){
+            return mass;
         }
         
         void pause(){
