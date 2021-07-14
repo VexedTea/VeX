@@ -44,6 +44,12 @@ namespace VeX{
         float getSize(){
             return size;
         }
+
+        void setSize(float newSize){
+            size = newSize;
+            body.setRadius(size);
+            body.setOrigin({size, size});
+        }
     };
 
 } // namespace VeX

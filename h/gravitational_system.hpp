@@ -3,6 +3,7 @@
 
 #include "utilities.hpp"
 #include "circle_object.hpp"
+#include "definitions.hpp"
 
 namespace VeX{
 
@@ -25,18 +26,36 @@ namespace VeX{
                         // }
 
                         if(bodies[i]->collidesWith(bodies[j]->getPosition(), bodies[j]->getSize())){
-                            float m1 = bodies[i]->getMass();    //https://en.wikipedia.org/wiki/Elastic_collision
-                            float m2 = bodies[j]->getMass();
-                            sf::Vector2f u1 = bodies[i]->getVelocity();
-                            sf::Vector2f u2 = bodies[j]->getVelocity();
-                            bodies[i]->setVelocity((((m1-m2)/(m1+m2))*u1) + (((2*m2)/(m1+m2))*u2));
-                            bodies[j]->setVelocity((((2*m2)/(m1+m2))*u1) + (((m1-m2)/(m1+m2))*u2));
+                            if(magnitude(bodies[i]->getVelocity()) + magnitude(bodies[j]->getVelocity()) < 75.f){
+                                bodies[i]->addMass(bodies[j]->getMass());
+                                bodies[i]->setSize(sqrt(pow(bodies[i]->getSize(), 2) + pow(bodies[j]->getSize(), 2)));
+                                bodies.erase(bodies.begin()+j);
+                                j--;
+                            }else{
+                                // https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional
+                                float m1 = bodies[i]->getMass();
+                                float m2 = bodies[j]->getMass();
+                                float v1 = magnitude(bodies[i]->getVelocity());
+                                float v2 = magnitude(bodies[j]->getVelocity());
+                                float theta1 = angleRadians(bodies[i]->getVelocity());
+                                float theta2 = angleRadians(bodies[j]->getVelocity());
+                                float phi = angleRadians(bodies[j]->getPosition() - bodies[i]->getPosition());
+                                bodies[i]->setVelocity(sf::Vector2f(
+                                    ( ( ( ( v1 * cos(theta1 - phi) * (m1-m2) ) + ( 2.f * m2 * v2 * cos(theta2 - phi) ) ) / (m1 + m2) ) * cos(phi) ) + ( v1 * sin(theta1 - phi) * cos(phi + (Definition::pi/2.f)) ),
+                                    ( ( ( ( v1 * cos(theta1 - phi) * (m1-m2) ) + ( 2.f * m2 * v2 * cos(theta2 - phi) ) ) / (m1 + m2) ) * sin(phi) ) + ( v1 * sin(theta1 - phi) * sin(phi + (Definition::pi/2.f)) )
+                                ) * 0.825);
+                                bodies[j]->setVelocity(sf::Vector2f(
+                                    ( ( ( ( v2 * cos(theta2 - phi) * (m2-m1) ) + ( 2.f * m1 * v1 * cos(theta1 - phi) ) ) / (m2 + m1) ) * cos(phi) ) + ( v2 * sin(theta2 - phi) * cos(phi + (Definition::pi/2.f)) ),
+                                    ( ( ( ( v2 * cos(theta2 - phi) * (m2-m1) ) + ( 2.f * m1 * v1 * cos(theta1 - phi) ) ) / (m2 + m1) ) * sin(phi) ) + ( v2 * sin(theta2 - phi) * sin(phi + (Definition::pi/2.f)) )
+                                ) * 0.825);
+                                bodies[i]->goBack();
+                                bodies[j]->goBack();
+                            }
                         }
                     }
                 }
                 bodies[i]->update(delta);
-                if(distance(bodies[i]->getPosition(), engine->settings->getScreenCenter()) > engine->settings->screenWidth*10.f){
-                    std::cout << bodies[i]->getPosition() << std::endl;
+                if(distance(bodies[i]->getPosition(), engine->settings->getScreenCenter()) > engine->settings->screenWidth*1.2){
                     bodies.erase(bodies.begin()+i);
                     i--;
                 }
@@ -50,7 +69,6 @@ namespace VeX{
         }
 
         void addBody(std::unique_ptr<Circle_Object> newBody){
-            std::cout << "Gravitational_System addBody" << std::endl;
             bodies.push_back(std::move(newBody));
         }
     };

@@ -18,6 +18,7 @@ namespace VeX{
 
         bool paused;
         bool hidden;
+        sf::Vector2f previousPosition;
     public:
         Object(const sf::Vector2f & position, const sf::Vector2f & size, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
             position(position),
@@ -26,7 +27,8 @@ namespace VeX{
             mass(mass),
             motionDampening(motionDampening),
             paused(false),
-            hidden(false)
+            hidden(false),
+            previousPosition(position)
         {}
 
         Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
@@ -48,6 +50,7 @@ namespace VeX{
         virtual void update(float delta){
             if(!paused){
                 velocity = velocity / ((motionDampening * delta)+1);
+                previousPosition = position;
                 position += velocity * delta;
             }
         }
@@ -72,6 +75,7 @@ namespace VeX{
         }
 
         void setPosition(const sf::Vector2f & newPos){
+            previousPosition = position;
             position = newPos;
         }
 
@@ -84,6 +88,7 @@ namespace VeX{
         }
 
         void move(const sf::Vector2f & move){
+            previousPosition = position;
             position += move;
         }
 
@@ -101,6 +106,10 @@ namespace VeX{
 
         float getMass(){
             return mass;
+        }
+
+        void addMass(float massAdd){
+            mass += massAdd;
         }
         
         void pause(){
@@ -121,6 +130,10 @@ namespace VeX{
 
         bool isAt(const sf::Vector2f & targetPos, float range=1.f){
             return range > sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
+        }
+
+        void goBack(){
+            position = previousPosition;
         }
     };
 

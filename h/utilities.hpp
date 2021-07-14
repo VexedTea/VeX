@@ -6,6 +6,14 @@
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
+float angleRadians(const sf::Vector2f & v){
+    float angle = atan2(v.y, v.x)/* *180/3.14159265358979323846 */;
+    // if(angle < 0){
+    //     angle += 360;
+    // }
+    return angle;
+}
+
 sf::Vector2f pow(const sf::Vector2f & v, int power){
     return sf::Vector2f(pow(v.x, power), pow(v.y, power));
 }

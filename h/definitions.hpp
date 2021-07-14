@@ -23,6 +23,8 @@ namespace Definition {
 
     constexpr float G = 6.674*pow(10, -11);
 
+    constexpr double pi = 3.14159265358979323846;
+
     VeX::Color_Gradient vexGradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}});
 
     //Texture stuff
