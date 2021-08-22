@@ -26,10 +26,10 @@ int main(){
     srand(time(NULL));
     
     //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(3.f), std::make_unique<VeX::Slideshow>("assets/textures")), false);
-    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(3.f), std::make_unique<VeX::Particle_Demo>()), false);
+    VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(3.f), std::make_unique<VeX::Particle_Demo>()), false);
     //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(3.f), std::make_unique<VeX::Grav>()), false);
     //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.f), std::make_unique<VeX::Particle_Experiments>()), false);
-    VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.f), std::make_unique<VeX::Voxel_Sim_Demo>()), false);
+    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.f), std::make_unique<VeX::Voxel_Sim_Demo>()), false);
     VeX::engine->run();
 
     //Can do stuff here to be done when closing, like saving a config/savefile or smth

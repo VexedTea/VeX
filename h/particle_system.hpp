@@ -53,6 +53,12 @@ namespace VeX{
                 particles[i]->hide();
             }
         }
+
+        void removeOldestParticle(){
+            if(particles.size() > 0){
+                particles.erase(particles.begin());
+            }
+        }
     };
 
 } // namespace VeX
