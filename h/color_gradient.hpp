@@ -18,6 +18,10 @@ namespace VeX{
             }
         }
 
+        Color_Gradient():
+            colors({sf::Color(0,0,0,0), sf::Color(255,255,255,255)})
+        {}
+
         sf::Color getColorAt(float fraction, bool debug=false)const{
             if(fraction <= 0){ //Here it's going to fully be the first color in the gradient anyways
                 //std::cout << fraction << " \n";

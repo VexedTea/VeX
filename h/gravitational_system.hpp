@@ -55,7 +55,7 @@ namespace VeX{
                     }
                 }
                 bodies[i]->update(delta);
-                if(distance(bodies[i]->getPosition(), engine->settings->getScreenCenter()) > engine->settings->screenWidth*1.2){
+                if(distance(bodies[i]->getPosition(), engine->settings->getScreenCenter()) > engine->settings->screenWidth*5){
                     bodies.erase(bodies.begin()+i);
                     i--;
                 }

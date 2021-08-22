@@ -25,7 +25,15 @@ namespace VeX{
         {}
         
         void init(){
-            
+            // gravSystem.addBody(std::make_unique<Circle_Object>(
+            //     engine->settings->getScreenCenter(),
+            //     50.f,
+            //     sf::Color(50,50,50),
+            //     // magnitude(placingStartPoint - static_cast<sf::Vector2f>(sf::Mouse::getPosition(engine->window))) * pow(10.f, 14.f),
+            //     // sf::Vector2f{0.f,0.f}
+            //     pow(10.f, 18.f),
+            //     sf::Vector2f{0.f,0.f}
+            // ));
         }
         
         void handleInput(){

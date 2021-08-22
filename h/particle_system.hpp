@@ -38,7 +38,6 @@ namespace VeX{
         }
 
         virtual void update(float delta)override{
-            std::cout << "particle system update start" << std::endl;
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->gravTo(position, delta);
                 particles[i]->update(delta);

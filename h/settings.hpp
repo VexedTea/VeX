@@ -11,7 +11,7 @@ namespace VeX{
             screenWidth(1280),
             screenHeight(720),
             gravity(Definition::gravitationalConstant),
-            maxParticleCount(32'000*2),
+            maxParticleCount(32'000),
             //maxParticleCount(2560*1440),
             currentParticleCount(0),
             defaultParticleMotionDampening(Definition::defaultParticleMotionDampening)

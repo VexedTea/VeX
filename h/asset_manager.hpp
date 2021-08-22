@@ -15,9 +15,23 @@ namespace VeX{
 
     class Asset_Manager{
     private:
+        sf::Texture blankTexture;
         std::map<std::string, sf::Texture> textures;
     public:
+        Asset_Manager():
+            blankTexture()
+        {
+            blankTexture.create(1,1);
+            sf::Image blankImage;
+            blankImage.create(1, 1, sf::Color::White);
+            blankTexture.update(blankImage);
+        }
+
         // Texture functions
+        const sf::Texture & getBlankTexture(){
+            return blankTexture;
+        }
+
         const sf::Texture & loadTexture(const std::string & name) {
             return loadTexture(name, Definition::textures[name]);
         }
