@@ -12,12 +12,16 @@ namespace VeX{
 
     class Particle_System : public Object{
     protected:
+        sf::CircleShape centerPoint;
         std::vector<Particle_Ptr> particles;
     public:
         Particle_System(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
-            Object(position, velocity, mass, motionDampening)
+            Object(position, velocity, mass, motionDampening),
+            centerPoint(5.f)
             //particles({})
-        {}
+        {
+            centerPoint.setOrigin({5.f, 5.f});sf::Sprite centerPoint;
+        }
 
         Particle_System(const sf::Vector2f & position, const sf::Vector2f & motionDampening):
             Particle_System(position, {0,0}, 0.f, motionDampening)
@@ -35,6 +39,11 @@ namespace VeX{
             for(unsigned int i=0; i<particles.size(); i++){
                 particles[i]->draw(delta);
             }
+        }
+
+        void drawCenterPoint(){
+            centerPoint.setPosition(position);
+            engine->window.draw(centerPoint);
         }
 
         virtual void update(float delta)override{

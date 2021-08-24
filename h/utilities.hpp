@@ -40,6 +40,10 @@ unsigned int countFilesInFolder(const std::string & folderPath){
     return count;
 }
 
+sf::Vector2f getPositionOnCircle(const sf::Vector2f & centerPos, float radius, float angleDegrees){
+    return sf::Vector2f(centerPos.x + (radius*cos(angleDegrees*(180/3.14159265358979323846))), centerPos.y + (radius*sin(angleDegrees*(180/3.14159265358979323846))));
+}
+
 template<typename T>
 inline sf::Vector2f operator/(
     const sf::Vector2<T>& left,
