@@ -6,6 +6,10 @@
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
+sf::Vector2f vector2iToVector2f(const sf::Vector2i & v){
+    return {static_cast<float>(v.x), static_cast<float>(v.y)};
+}
+
 float angleRadians(const sf::Vector2f & v){
     float angle = atan2(v.y, v.x)/* *180/3.14159265358979323846 */;
     // if(angle < 0){
@@ -41,7 +45,7 @@ unsigned int countFilesInFolder(const std::string & folderPath){
 }
 
 sf::Vector2f getPositionOnCircle(const sf::Vector2f & centerPos, float radius, float angleDegrees){
-    return sf::Vector2f(centerPos.x + (radius*cos(angleDegrees*(180/3.14159265358979323846))), centerPos.y + (radius*sin(angleDegrees*(180/3.14159265358979323846))));
+    return sf::Vector2f(centerPos.x + (radius*cos(angleDegrees*(3.14159265358979323846/180.f))), centerPos.y + (radius*sin(angleDegrees*(3.14159265358979323846/180.f))));
 }
 
 template<typename T>

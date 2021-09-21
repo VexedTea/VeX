@@ -17,6 +17,7 @@ namespace VeX{
         float framerate;
         sf::Font debugFont;
         sf::Text frameTimeText;
+        sf::Text currentParticleCountText;
 
         sf::Clock clock;
     public:
@@ -32,13 +33,20 @@ namespace VeX{
         {
             if(!debugFont.loadFromFile("assets/fonts/Arial_GEO.TTF")){
                 std::cout << "Particle_Experiments: Failed to load debugFont" << std::endl;
-            }
+            }//FIX THIS SHIT
             frameTimeText.setFont(debugFont);
             frameTimeText.setString("First frame!");
             frameTimeText.setCharacterSize(24);
             frameTimeText.setFillColor(sf::Color::White);
             frameTimeText.setOutlineThickness(3);
             frameTimeText.setOutlineColor(sf::Color::Black);
+            currentParticleCountText.setPosition(sf::Vector2f(0.f, 24.f));
+            currentParticleCountText.setFont(debugFont);
+            currentParticleCountText.setString(std::to_string(settings->currentParticleCount));
+            currentParticleCountText.setCharacterSize(24);
+            currentParticleCountText.setFillColor(sf::Color::White);
+            currentParticleCountText.setOutlineThickness(3);
+            currentParticleCountText.setOutlineColor(sf::Color::Black);
         }
 
         //float highestFrameTime;//Will introduce proper runtime statistics and stuff sometime
@@ -101,6 +109,11 @@ namespace VeX{
         void displayFramerate(){
             frameTimeText.setString(std::to_string(framerate));
             window.draw(frameTimeText);
+        }
+
+        void displayCurrentParticleCount(){
+            currentParticleCountText.setString(std::to_string(settings->currentParticleCount));
+            window.draw(currentParticleCountText);
         }
     };
 

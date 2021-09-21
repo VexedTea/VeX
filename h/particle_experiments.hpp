@@ -9,12 +9,7 @@ namespace VeX{
     class Particle_Experiments : public State{
     private:
         Particle_System particleSystem;
-
-        //Debug stuffs
-        sf::Clock niceClock;
-        sf::Time prevDrawCallTime;
-        sf::Font debugFont;
-        sf::Text frameTimeText;
+        sf::Vector2f prevMousePos;
 
         void addDefaultParticles(){
             engine->loadTexture("Particle", "assets/textures/particle.png");
@@ -30,21 +25,11 @@ namespace VeX{
     public:
         Particle_Experiments():
             particleSystem(),
-            niceClock(),
-            prevDrawCallTime(niceClock.getElapsedTime())
-        {}/* e5upSHu.jpg */
+            prevMousePos(sf::Mouse::getPosition())
+        {}
         
         void init(){
-
             particleSystem.setPosition(sf::Vector2f(engine->settings->screenWidth/2, engine->settings->screenHeight/2));
-            
-            if(!debugFont.loadFromFile("assets/fonts/Arial_GEO.TTF")){
-                std::cout << "Particle_Experiments: Failed to load debugFont" << std::endl;
-            }
-            frameTimeText.setFont(debugFont);
-            frameTimeText.setString("First frame!");
-            frameTimeText.setCharacterSize(24);
-            frameTimeText.setFillColor(sf::Color::White);
         }
         
         void handleInput(){
@@ -59,19 +44,23 @@ namespace VeX{
         
         void update(float delta){
             particleSystem.setPosition(sf::Mouse::getPosition(engine->window));
+            for(unsigned int i=0; i<100; i++){
+                particleSystem.addParticle(std::make_unique<Particle>(particleSystem.getPosition(), 
+                                                                    (vector2iToVector2f(sf::Mouse::getPosition()) - prevMousePos) * delta * 1000.f));
+                engine->settings->currentParticleCount++;
+            }
+            prevMousePos = vector2iToVector2f(sf::Mouse::getPosition());
             particleSystem.update(delta);
         }
         
         void draw(float delta){
-            sf::Time currentTime = niceClock.getElapsedTime();
-            frameTimeText.setString(std::to_string( 1000/(currentTime.asMilliseconds() - prevDrawCallTime.asMilliseconds())));
-            prevDrawCallTime = currentTime;
-
             engine->window.clear();
             
-            engine->window.draw(frameTimeText);
             particleSystem.draw(delta);
             
+            particleSystem.drawCenterPoint();
+            engine->displayFramerate();
+            engine->displayCurrentParticleCount();
             engine->window.display();
         }
     };

@@ -17,11 +17,19 @@ namespace VeX{
         {}
 
         Particle(const sf::Vector2f & position, const sf::Texture & texture):
-            Particle(position, texture, {0,0}, 0.f, {0,0})
+            Particle(position, texture, {0,0}, 0.f, Definition::defaultParticleMotionDampening)
         {}
 
         Particle(const sf::Vector2f & position, const sf::Texture & texture, const sf::Vector2f & motionDampening):
             Particle(position, texture, {0,0}, 0.f, motionDampening)
+        {}
+
+        Particle(const sf::Vector2f & position, const sf::Vector2f & velocity):
+            Particle(position, engine->getBlankTexture(), velocity, 0.f, Definition::defaultParticleMotionDampening)
+        {}
+
+        Particle(const sf::Vector2f & position):
+            Particle(position, engine->getBlankTexture())
         {}
     };
 
