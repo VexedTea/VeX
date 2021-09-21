@@ -17,7 +17,10 @@ namespace VeX{
         bool circlePaused;
         bool showCenters;
         bool drawParticles;
+        bool maxParticleCountReached;
         float circleAngle;
+        unsigned int primitiveTypeIndex;
+        std::vector<sf::PrimitiveType> primitiveTypes;
         std::unique_ptr<Vertex_Particle_System> particleSystem;
         std::unique_ptr<Vertex_Particle_System> particleSystem1;
         std::unique_ptr<Vertex_Particle_System> particleSystem2;
@@ -29,7 +32,10 @@ namespace VeX{
             circlePaused(circlePaused),
             showCenters(false),
             drawParticles(true),
+            maxParticleCountReached(false),
             circleAngle(0.f),
+            primitiveTypeIndex(0),
+            primitiveTypes({sf::PrimitiveType::Points, sf::PrimitiveType::Lines, sf::PrimitiveType::LineStrip, sf::PrimitiveType::Triangles, sf::PrimitiveType::TriangleStrip, sf::PrimitiveType::TriangleFan, sf::PrimitiveType::Quads}),
             particleSystem(std::make_unique<Vertex_Particle_System>()),
             particleSystem1(std::make_unique<Vertex_Particle_System>()),
             particleSystem2(std::make_unique<Vertex_Particle_System>()),
@@ -42,6 +48,8 @@ namespace VeX{
             engine->addKeybind("circlePauseToggle", sf::Keyboard::Key::P);
             engine->addKeybind("showCenters", sf::Keyboard::Key::L);
             engine->addKeybind("drawParticles", sf::Keyboard::Key::K);
+            engine->addKeybind("nextPrimitiveType", sf::Keyboard::Key::Add);
+            engine->addKeybind("prevPrimitiveType", sf::Keyboard::Key::Subtract);
             particleSystem->setPosition(sf::Mouse::getPosition());
             // for(unsigned int i=0; i<engine->settings->maxParticleCount; i++){
             //     particleSystem->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
@@ -73,6 +81,32 @@ namespace VeX{
                 drawParticles = !drawParticles;
             }
 
+            if(engine->getKeybind("nextPrimitiveType")->onKeyDown()){
+                if(primitiveTypeIndex >= primitiveTypes.size()-1){
+                    primitiveTypeIndex = 0;
+                }else{
+                    primitiveTypeIndex++;
+                }
+                particleSystem->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                std::cout << primitiveTypeIndex << std::endl;
+            }
+
+            if(engine->getKeybind("prevPrimitiveType")->onKeyDown()){
+                if(primitiveTypeIndex < 1){
+                    primitiveTypeIndex = primitiveTypes.size()-1;
+                }else{
+                    primitiveTypeIndex--;
+                }
+                particleSystem->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                std::cout << primitiveTypeIndex << std::endl;
+            }
+
             sf::Event event;
             while (engine->window.pollEvent(event)){
                 if (event.type == sf::Event::Closed)
@@ -94,8 +128,8 @@ namespace VeX{
                 }   //0.215 & 500.f highest known to inhibit effect and 0.191 smallest known
             }
 
-            if(engine->getFramerate() > 75.f){
-                for(unsigned int i=0; i<2; i++){
+            if(engine->getFramerate() > 75.f && !maxParticleCountReached){
+                for(unsigned int i=0; i<20; i++){
                     particleSystem->addParticle(std::make_unique<Vertex_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                         -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
                                                                                         Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
@@ -116,6 +150,7 @@ namespace VeX{
                 particleSystem2->removeOldestParticle();
                 particleSystem3->removeOldestParticle();
                 engine->settings->currentParticleCount -= 4;
+                maxParticleCountReached = true;
             }
 
             particleSystem->update(delta);
