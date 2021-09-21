@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 
-#include "speed_gradient_particle.hpp"
-#include "particle_system.hpp"
+#include "vertex_particle.hpp"
+#include "vertex_particle_system.hpp"
 #include "engine.hpp"
 #include "utilities.hpp"
 
@@ -18,10 +18,10 @@ namespace VeX{
         bool showCenters;
         bool drawParticles;
         float circleAngle;
-        std::unique_ptr<Particle_System> particleSystem;
-        std::unique_ptr<Particle_System> particleSystem1;
-        std::unique_ptr<Particle_System> particleSystem2;
-        std::unique_ptr<Particle_System> particleSystem3;
+        std::unique_ptr<Vertex_Particle_System> particleSystem;
+        std::unique_ptr<Vertex_Particle_System> particleSystem1;
+        std::unique_ptr<Vertex_Particle_System> particleSystem2;
+        std::unique_ptr<Vertex_Particle_System> particleSystem3;
         
     public:
         Particle_Demo(bool circlePath=true, bool circlePaused=false):
@@ -30,10 +30,10 @@ namespace VeX{
             showCenters(false),
             drawParticles(true),
             circleAngle(0.f),
-            particleSystem(std::make_unique<Particle_System>()),
-            particleSystem1(std::make_unique<Particle_System>()),
-            particleSystem2(std::make_unique<Particle_System>()),
-            particleSystem3(std::make_unique<Particle_System>())            
+            particleSystem(std::make_unique<Vertex_Particle_System>()),
+            particleSystem1(std::make_unique<Vertex_Particle_System>()),
+            particleSystem2(std::make_unique<Vertex_Particle_System>()),
+            particleSystem3(std::make_unique<Vertex_Particle_System>())            
         {}
 
         void init(){
@@ -95,17 +95,17 @@ namespace VeX{
             }
 
             if(engine->getFramerate() > 75.f){
-                for(unsigned int i=0; i<5; i++){
-                    particleSystem->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
+                for(unsigned int i=0; i<2; i++){
+                    particleSystem->addParticle(std::make_unique<Vertex_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                         -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
                                                                                         Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                    particleSystem1->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem1->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
+                    particleSystem1->addParticle(std::make_unique<Vertex_Particle>(particleSystem1->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                         -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
                                                                                         Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                    particleSystem2->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem2->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
+                    particleSystem2->addParticle(std::make_unique<Vertex_Particle>(particleSystem2->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                         -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
                                                                                         Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                    particleSystem3->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem3->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
+                    particleSystem3->addParticle(std::make_unique<Vertex_Particle>(particleSystem3->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                         -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
                                                                                         Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
                     engine->settings->currentParticleCount += 4;
