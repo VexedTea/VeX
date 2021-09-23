@@ -91,7 +91,7 @@ namespace VeX{
                 particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-                std::cout << primitiveTypeIndex << std::endl;
+                //std::cout << primitiveTypeIndex << std::endl;
             }
 
             if(engine->getKeybind("prevPrimitiveType")->onKeyDown()){
@@ -104,7 +104,7 @@ namespace VeX{
                 particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-                std::cout << primitiveTypeIndex << std::endl;
+                //std::cout << primitiveTypeIndex << std::endl;
             }
 
             sf::Event event;

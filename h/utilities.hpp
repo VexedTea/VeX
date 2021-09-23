@@ -6,6 +6,49 @@
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
+template <class T>
+class ringbuff{
+private:
+    std::vector<T> buff;
+    unsigned int size;
+    unsigned int head;
+    unsigned int tail;
+public:
+    explicit ringbuff(unsigned int size):
+        buff(),
+        size(size),
+        head(0),
+        tail(0)
+    {}
+
+    void push_back(const T & item){
+        head++;
+        if(head >= size){
+            head -= size;
+        }
+        if(head == tail){
+            tail++;
+            if(tail >= size){
+                tail -= size;
+            }
+        }
+        if(head >= buff.size()){
+            buff.push_back(item);
+        }else{
+            buff[head] = item;
+        }
+        std::cout << tail << std::endl;
+    }
+
+    T front(){
+        return buff[head];
+    }
+
+    T back(){
+        return buff[tail];
+    }
+};
+
 sf::Vector2f vector2iToVector2f(const sf::Vector2i & v){
     return {static_cast<float>(v.x), static_cast<float>(v.y)};
 }

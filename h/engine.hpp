@@ -8,6 +8,7 @@
 #include "asset_manager.hpp"
 #include "input_manager.hpp"
 #include "settings.hpp"
+#include "utilities.hpp"
 
 namespace VeX{
 
@@ -15,6 +16,7 @@ namespace VeX{
     private:
         const float delta;
         float framerate;
+        ringbuff<sf::Time> frametimes;
         sf::Font debugFont;
         sf::Text frameTimeText;
         sf::Text currentParticleCountText;
@@ -26,13 +28,14 @@ namespace VeX{
             Asset_Manager(),
             delta(1.f/60.f),
             framerate(0.f),
+            frametimes(60),
             //highestFrameTime(0),
             //startTime(clock.getElapsedTime().asSeconds()),
             window(window),
             settings(std::make_unique<Settings>())
         {
             if(!debugFont.loadFromFile("assets/fonts/Arial_GEO.TTF")){
-                std::cout << "Particle_Experiments: Failed to load debugFont" << std::endl;
+                std::cout << "Engine: Failed to load debugFont" << std::endl;
             }//FIX THIS SHIT
             frameTimeText.setFont(debugFont);
             frameTimeText.setString("First frame!");
@@ -57,6 +60,7 @@ namespace VeX{
         void runOnce(float & newTime, float & frameTime, float & interpolation, float & currentTime, float & accumulator){
             //std::cout << " newTime: " << newTime << " frameTime: " << frameTime << " interpolation: " << interpolation << " currentTime: " << currentTime << " accumulator: " << accumulator << std::endl;
             newTime = clock.getElapsedTime().asSeconds();
+            frametimes.push_back(clock.getElapsedTime());
             frameTime = newTime - currentTime;
             // if(frameTime > highestFrameTime && currentTime - startTime > 30.f){highestFrameTime=frameTime;}
             if (frameTime > 0.25f) {
@@ -73,7 +77,7 @@ namespace VeX{
             }
             interpolation = accumulator/delta;
 
-            framerate = 1/frameTime;
+            framerate = 60.f/(frametimes.front().asSeconds() - frametimes.back().asSeconds());
 
             getActiveState()->draw(interpolation);
         }
