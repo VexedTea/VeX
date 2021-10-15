@@ -37,7 +37,6 @@ public:
         }else{
             buff[head] = item;
         }
-        std::cout << tail << std::endl;
     }
 
     T front(){

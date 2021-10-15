@@ -13,7 +13,7 @@ namespace VeX{
 
     class Particle_Demo : public State{
     private:
-        bool circlePath;
+        bool snapToScreenCenter;
         bool circlePaused;
         bool showCenters;
         bool drawParticles;
@@ -27,8 +27,8 @@ namespace VeX{
         std::unique_ptr<Vertex_Particle_System> particleSystem3;
         
     public:
-        Particle_Demo(bool circlePath=true, bool circlePaused=false):
-            circlePath(circlePath),
+        Particle_Demo(bool snapToScreenCenter=true, bool circlePaused=false):
+            snapToScreenCenter(snapToScreenCenter),
             circlePaused(circlePaused),
             showCenters(false),
             drawParticles(true),
@@ -44,29 +44,23 @@ namespace VeX{
 
         void init(){
             engine->addKeybind("resetState", sf::Keyboard::Key::Backspace);
-            engine->addKeybind("circlePathToggle", sf::Keyboard::Key::O);
+            engine->addKeybind("snapToScreenCenterToggle", sf::Keyboard::Key::O);
             engine->addKeybind("circlePauseToggle", sf::Keyboard::Key::P);
             engine->addKeybind("showCenters", sf::Keyboard::Key::L);
             engine->addKeybind("drawParticles", sf::Keyboard::Key::K);
             engine->addKeybind("nextPrimitiveType", sf::Keyboard::Key::Add);
             engine->addKeybind("prevPrimitiveType", sf::Keyboard::Key::Subtract);
             particleSystem->setPosition(sf::Mouse::getPosition());
-            // for(unsigned int i=0; i<engine->settings->maxParticleCount; i++){
-            //     particleSystem->addParticle(std::make_unique<Speed_Gradient_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
-            //                                                             -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
-            //                                                             Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-            //     engine->settings->currentParticleCount++;
-            // }
         }
 
         void handleInput(){
             if(engine->getKeybind("resetState")->onKeyDown()){
                 engine->settings->currentParticleCount = 0;
-                engine->addState(std::make_unique<VeX::Particle_Demo>(circlePath), true);
+                engine->addState(std::make_unique<VeX::Particle_Demo>(snapToScreenCenter), true);
             }
 
-            if(engine->getKeybind("circlePathToggle")->onKeyDown()){
-                circlePath = !circlePath;
+            if(engine->getKeybind("snapToScreenCenterToggle")->onKeyDown()){
+                snapToScreenCenter = !snapToScreenCenter;
             }
 
             if(engine->getKeybind("circlePauseToggle")->onKeyDown()){
@@ -91,7 +85,6 @@ namespace VeX{
                 particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-                //std::cout << primitiveTypeIndex << std::endl;
             }
 
             if(engine->getKeybind("prevPrimitiveType")->onKeyDown()){
@@ -104,7 +97,6 @@ namespace VeX{
                 particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
                 particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-                //std::cout << primitiveTypeIndex << std::endl;
             }
 
             sf::Event event;
@@ -115,20 +107,25 @@ namespace VeX{
         }
 
         void update(float delta){
-            if(!circlePath){
-                particleSystem->setPosition(sf::Mouse::getPosition(engine->window));
-            }else if(!circlePaused){
-                particleSystem->setPosition(getPositionOnCircle(engine->settings->getScreenCenter(), 400.f, circleAngle));
-                particleSystem1->setPosition(getPositionOnCircle(engine->settings->getScreenCenter(), 400.f, circleAngle+90.f));
-                particleSystem2->setPosition(getPositionOnCircle(engine->settings->getScreenCenter(), 400.f, circleAngle+180.f));
-                particleSystem3->setPosition(getPositionOnCircle(engine->settings->getScreenCenter(), 400.f, circleAngle+270.f));
+            sf::Vector2f circleCenter;
+            if(!snapToScreenCenter){
+                circleCenter = vector2iToVector2f(sf::Mouse::getPosition(engine->window));
+            }else{
+                circleCenter = engine->settings->getScreenCenter();
+            }
+            
+            if(!circlePaused){
+                particleSystem->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle));
+                particleSystem1->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle+90.f));
+                particleSystem2->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle+180.f));
+                particleSystem3->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle+270.f));
                 circleAngle += 1.65 * 360.f * delta;
                 if(circleAngle >= 360.f){
                     circleAngle -= 360.f;
                 }   //0.215 & 500.f highest known to inhibit effect and 0.191 smallest known
             }
 
-            if(engine->getFramerate() > 75.f && !maxParticleCountReached){
+            if(!maxParticleCountReached && engine->getFramerate() > 75.f && engine->settings->currentParticleCount < 40'000){
                 for(unsigned int i=0; i<20; i++){
                     particleSystem->addParticle(std::make_unique<Vertex_Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                         -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
@@ -150,6 +147,8 @@ namespace VeX{
                 particleSystem2->removeOldestParticle();
                 particleSystem3->removeOldestParticle();
                 engine->settings->currentParticleCount -= 4;
+                maxParticleCountReached = true;
+            }else{
                 maxParticleCountReached = true;
             }
 
