@@ -1,36 +1,27 @@
 #ifndef __PARTICLE_HPP__
 #define __PARTICLE_HPP__
 
-#include <memory>
-#include "sprite_object.hpp"
-#include "engine.hpp"
+#include "object.hpp"
+#include "color_gradient.hpp"
 
 namespace VeX{
 
-    class Particle : public Sprite_Object{
+    class Particle : public Object{
     private:
-        
+        Color_Gradient gradient;
+        float gradientEndSpeed;
     public:
-        Particle(const sf::Vector2f & position, const sf::Texture & texture, 
-                const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
-            Sprite_Object(position, texture, velocity, mass, motionDampening)
-        {}
+        Particle(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening,
+                        const Color_Gradient & gradient, float gradientEndSpeed=1000.f);
 
-        Particle(const sf::Vector2f & position, const sf::Texture & texture):
-            Particle(position, texture, {0,0}, 0.f, Definition::defaultParticleMotionDampening)
-        {}
+        Particle(const sf::Vector2f & position, const sf::Vector2f & velocity, const sf::Vector2f & motionDampening,
+                        const Color_Gradient & gradient, float gradientEndSpeed=1000.f);
 
-        Particle(const sf::Vector2f & position, const sf::Texture & texture, const sf::Vector2f & motionDampening):
-            Particle(position, texture, {0,0}, 0.f, motionDampening)
-        {}
+        Particle(const sf::Vector2f & position, const sf::Vector2f & velocity,
+                        const Color_Gradient & gradient, float gradientEndSpeed=1000.f);
 
-        Particle(const sf::Vector2f & position, const sf::Vector2f & velocity):
-            Particle(position, engine->getBlankTexture(), velocity, 0.f, Definition::defaultParticleMotionDampening)
-        {}
-
-        Particle(const sf::Vector2f & position):
-            Particle(position, engine->getBlankTexture())
-        {}
+        Particle(const sf::Vector2f & position, const Color_Gradient & gradient, float gradientEndSpeed=1000.f);
+        sf::Color getColor();
     };
 
     using Particle_Ptr = std::unique_ptr<Particle>;

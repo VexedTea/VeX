@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <string>
+#include <iostream>
+#include "SFML/Graphics.hpp"
 
 #include "keybind.hpp"
 
@@ -15,44 +17,19 @@ namespace VeX{
         bool rightClickPressed = false;
         bool rightClickPrev = false;
     public:
-        void updateInputs(){
-            for (auto const& keybind : keybinds){
-                keybind.second->update();
-            }
-            leftClickPrev = leftClickPressed;
-            leftClickPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-            rightClickPrev = rightClickPressed;
-            rightClickPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
-        }
+        void updateInputs();
 
-        void addKeybind(const std::string & name, const sf::Keyboard::Key & key){
-            keybinds.emplace(name, std::make_unique<Keybind>(key));
-        }
+        void addKeybind(const std::string & name, const sf::Keyboard::Key & key);
 
-        std::unique_ptr<Keybind> & getKeybind(const std::string & name){
-            const auto& item = keybinds.find(name);
+        std::unique_ptr<Keybind> & getKeybind(const std::string & name);
 
-            if (item == keybinds.end()) {
-                std::cerr << "[VeX WARNING] Unable to get asset of type 'Keybind' with name '" << name << "'.\n";
-            }
-            return item->second; //Second is the value, first should be the key
-        }
+        bool onLeftClick();
 
-        bool onLeftClick(){
-            return (!leftClickPrev && leftClickPressed);
-        }
+        bool onLeftClickRelease();
 
-        bool onLeftClickRelease(){
-            return (leftClickPrev && !leftClickPressed);
-        }
+        bool onRightClick();
 
-        bool onRightClick(){
-            return (!rightClickPrev && rightClickPressed);
-        }
-
-        bool onRightClickRelease(){
-            return (rightClickPrev && !rightClickPressed);
-        }
+        bool onRightClickRelease();
     };
 }
 #endif // __INPUT_MANAGER_HPP__
