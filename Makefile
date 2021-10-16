@@ -2,7 +2,7 @@
 # make        # compile all binary
 # make clean  # remove ALL binaries and objects
 
-.PHONY = all clean
+.PHONY = all clean run build
 
 CC = g++.exe
 
@@ -15,6 +15,8 @@ SRCS := $(wildcard c/*.cpp)
 OBJECTS := $(SRCS:c/%.cpp=o/%.o)
 
 all: VeX
+
+build: VeX
 
 run: VeX
 	VeX.exe
