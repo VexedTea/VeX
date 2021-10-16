@@ -1,23 +1,18 @@
 #ifndef __SETTINGS_HPP__
 #define __SETTINGS_HPP__
 
+#include "SFML/Graphics.hpp"
+#include <memory>
+
+#include "definitions.hpp"
+
 namespace VeX{
 
     class Settings{
     private:
         
     public:
-        Settings():
-            screenWidth(1280),
-            screenHeight(720),
-            gravity(Definition::gravitationalConstant),
-            maxParticleCount(32'000),
-            //maxParticleCount(2560*1440),
-            currentParticleCount(0),
-            defaultParticleMotionDampening(Definition::defaultParticleMotionDampening)
-        {
-            //Config loading stuff soon™
-        }
+        Settings();
 
         unsigned int screenWidth;
         unsigned int screenHeight;
@@ -26,9 +21,7 @@ namespace VeX{
         unsigned int currentParticleCount;
         sf::Vector2f defaultParticleMotionDampening;
 
-        sf::Vector2f getScreenCenter(){
-            return sf::Vector2f(float(screenWidth)/2.f, float(screenHeight)/2.f);
-        }
+        sf::Vector2f getScreenCenter();
     };
 
     using Settings_Ptr = std::unique_ptr<Settings>;

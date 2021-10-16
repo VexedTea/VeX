@@ -1,6 +1,8 @@
 #ifndef __KEYBIND_HPP__
 #define __KEYBIND_HPP__
 
+#include "SFML/Graphics.hpp"
+
 namespace VeX{
     
     class Keybind{
@@ -9,28 +11,15 @@ namespace VeX{
         bool keyPressed;
         bool prev;
     public:
-        Keybind(const sf::Keyboard::Key & key):
-            key(key),
-            keyPressed(sf::Keyboard::isKeyPressed(key)),
-            prev(keyPressed)
-        {}
+        Keybind(const sf::Keyboard::Key & key);
 
-        void update(){
-            prev = keyPressed;
-            keyPressed = sf::Keyboard::isKeyPressed(key);
-        }
+        void update();
 
-        bool getKeyPressed(){
-            return keyPressed;
-        }
+        bool getKeyPressed();
 
-        bool onKeyDown(){ //Returns true when the key goes down. (when keyPressed was false but the key is now pressed)
-            return (!prev && keyPressed);
-        }
+        bool onKeyDown();
 
-        bool onKeyUp(){ //Returns true when the key goes up. (when keyPressed was true but the key is now not pressed)
-            return (prev && !keyPressed);
-        }
+        bool onKeyUp();
     };
 
 } // namespace VeX

@@ -20,121 +20,53 @@ namespace VeX{
         bool hidden;
         sf::Vector2f previousPosition;
     public:
-        Object(const sf::Vector2f & position, const sf::Vector2f & size, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
-            position(position),
-            size(size),
-            velocity(velocity),
-            mass(mass),
-            motionDampening(motionDampening),
-            paused(false),
-            hidden(false),
-            previousPosition(position)
-        {}
+        Object(const sf::Vector2f & position, const sf::Vector2f & size, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening);
 
-        Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening):
-            Object(position, {0.f,0.f}, velocity, mass, motionDampening)
-        {}
+        Object(const sf::Vector2f & position, const sf::Vector2f & velocity, float mass, const sf::Vector2f & motionDampening);
 
-        Object(const sf::Vector2f & position):
-            Object(position, {0,0}, 0.f, {0,0})
-        {}
+        Object(const sf::Vector2f & position);
 
-        Object(const sf::Vector2f & position, const sf::Vector2f & velocity):
-            Object(position, velocity, 0.f, {0,0})
-        {}
+        Object(const sf::Vector2f & position, const sf::Vector2f & velocity);
 
-        Object(const sf::Vector2f & position, float mass):
-            Object(position, {0,0}, mass, {0,0})
-        {}
+        Object(const sf::Vector2f & position, float mass);
 
-        virtual void update(float delta){
-            if(!paused){
-                velocity = velocity / ((motionDampening * delta)+1);
-                previousPosition = position;
-                position += velocity * delta;
-            }
-        }
+        virtual void update(float delta);
 
-        virtual void draw(float){}
+        virtual void draw(float);
 
-        void gravTo(const sf::Vector2f & targetPos, float delta){
-            if(!paused){
-                if(targetPos == position){return;}
-                float magnitude = sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
-                sf::Vector2f direction = (targetPos - position)/magnitude;
-                float v = -0.4*magnitude + (engine->settings->gravity * delta * pow(magnitude, 1.2)) + 3;
-                velocity += direction * v;
-            }
-        }
+        void gravTo(const sf::Vector2f & targetPos, float delta);
 
-        void launchTo(const sf::Vector2f & targetPos){
-            float distance = sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
-            sf::Vector2f direction = (targetPos - position)/distance;
-            float v = distance * motionDampening.x; //Change this
-            velocity += (direction * v);
-        }
+        void launchTo(const sf::Vector2f & targetPos);
 
-        void setPosition(const sf::Vector2f & newPos){
-            previousPosition = position;
-            position = newPos;
-        }
+        void setPosition(const sf::Vector2f & newPos);
 
-        void setPosition(const sf::Vector2i & newPos){
-            setPosition(sf::Vector2f{static_cast<float>(newPos.x), static_cast<float>(newPos.y)});
-        }
+        void setPosition(const sf::Vector2i & newPos);
 
-        sf::Vector2f getPosition(){
-            return position;
-        }
+        sf::Vector2f getPosition();
 
-        void move(const sf::Vector2f & move){
-            previousPosition = position;
-            position += move;
-        }
+        void move(const sf::Vector2f & move);
 
-        void setVelocity(const sf::Vector2f & newVel){
-            velocity = newVel;
-        }
+        void setVelocity(const sf::Vector2f & newVel);
 
-        void addVelocity(const sf::Vector2f & velAdd){
-            velocity += velAdd;
-        }
+        void addVelocity(const sf::Vector2f & velAdd);
 
-        sf::Vector2f getVelocity(){
-            return velocity;
-        }
+        sf::Vector2f getVelocity();
 
-        float getMass(){
-            return mass;
-        }
+        float getMass();
 
-        void addMass(float massAdd){
-            mass += massAdd;
-        }
+        void addMass(float massAdd);
         
-        void pause(){
-            paused = true;
-        }
+        void pause();
 
-        void unpause(){
-            paused = false;
-        }
+        void unpause();
 
-        virtual void hide(){
-            hidden = true;
-        }
+        virtual void hide();
 
-        void unhide(){
-            hidden = false;
-        }
+        void unhide();
 
-        bool isAt(const sf::Vector2f & targetPos, float range=1.f){
-            return range > sqrt(pow(targetPos.x - position.x, 2) + pow(targetPos.y - position.y, 2));
-        }
+        bool isAt(const sf::Vector2f & targetPos, float range=1.f);
 
-        void goBack(){
-            position = previousPosition;
-        }
+        void goBack();
     };
 
 } // namespace VeX

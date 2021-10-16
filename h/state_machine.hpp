@@ -19,75 +19,14 @@ namespace VeX{
         bool isAdding;
         bool isReplacing;
     public:
-        void addState(State_Ptr state, bool replacing){
-            isAdding = true;
-            isReplacing = replacing;
-            newState = std::move(state);
-        }
+        void addState(State_Ptr state, bool replacing);
 
-        void removeState(){
-            isRemoving = true;
-        }
+        void removeState();
 
-        bool processStateChanges(){
-            bool didNotRemove = true;
-            if(isRemoving && !statesStack.empty()){
-                statesStack.pop();
-                if(!statesStack.empty()){
-                    statesStack.top()->resume();
-                }
-                isRemoving = false;
-                didNotRemove = false;
-            }
-            if(isAdding){
-                if(!statesStack.empty()){
-                    if(isReplacing){
-                        statesStack.pop();
-                    }else{
-                        statesStack.top()->pause();
-                    }
-                }
-                statesStack.push(std::move(newState));
-                statesStack.top()->init();
-                isAdding = false;
-                //printstatesStack();
-            }
-            return didNotRemove;
-        }
+        bool processStateChanges();
 
-        State_Ptr & getActiveState(){
-            return statesStack.top();
-        }
-
-        //The below is borked for now :(
-        // void printstatesStack(){ //Yoinked function from (edited) https://www.geeksforgeeks.org/print-stack-elements-from-bottom-to-top/
-        //     std::cout << "Current State stack: ";
-        //     printstatesStackRecursion();
-        //     std::cout << " end.\n";
-        // }
-
-        // void printstatesStackRecursion(int depth=0){ //Yoinked function from (edited) https://www.geeksforgeeks.org/print-stack-elements-from-bottom-to-top/
-        //     // If stack is empty then return
-        //     if (statesStack.empty()){
-        //         return;
-        //     }
+        State_Ptr & getActiveState();
         
-        //     State_Ptr state = statesStack.top();
-        
-        //     // Pop the top element of the stack
-        //     statesStack.pop();
-        
-        //     // Recursively call the function PrintStack
-        //     printstatesStackRecursion(depth++);
-        
-        //     // Print the stack element starting
-        //     // from the bottom
-        //     std::cout << depth << ". "<< typeid(state).name() << ";  ";
-        
-        //     // Push the same element onto the stack
-        //     // to preserve the order
-        //     statesStack.push(state);
-        // }
     };
 
 }

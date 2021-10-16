@@ -5,10 +5,11 @@
 #include <array>
 #include <mutex>
 #include <experimental/filesystem>
+#include "SFML/Graphics.hpp"
 namespace fs = std::experimental::filesystem;
 
 #include "definitions.hpp"
-#include "utilities.hpp"
+// #include "utilities.hpp"
 //#include "progress_bar.hpp"
 
 namespace VeX{
@@ -18,115 +19,30 @@ namespace VeX{
         sf::Texture blankTexture;
         std::map<std::string, sf::Texture> textures;
     public:
-        Asset_Manager():
-            blankTexture()
-        {
-            blankTexture.create(1,1);
-            sf::Image blankImage;
-            blankImage.create(1, 1, sf::Color::White);
-            blankTexture.update(blankImage);
-        }
+        Asset_Manager();
 
         // Texture functions
-        const sf::Texture & getBlankTexture(){
-            return blankTexture;
-        }
+        const sf::Texture & getBlankTexture();
 
-        const sf::Texture & loadTexture(const std::string & name) {
-            return loadTexture(name, Definition::textures[name]);
-        }
+        const sf::Texture & loadTexture(const std::string & name);
 
-        const sf::Texture & loadTexture(const std::string & name, const std::string & fileName) {
-            const auto& [texture, isKeyNew] = textures.emplace(name, sf::Texture());
+        const sf::Texture & loadTexture(const std::string & name, const std::string & fileName);
 
-            if (isKeyNew) {
-                texture->second.loadFromFile(fileName);
-            }
-            return texture->second;
-        }
+        const sf::Texture & reloadTexture(const std::string & name);
 
-        const sf::Texture & reloadTexture(const std::string & name) {
-            return reloadTexture(name, Definition::textures[name]);
-        }
+        const sf::Texture & reloadTexture(const std::string & name, const std::string & fileName);
 
-        const sf::Texture & reloadTexture(const std::string & name, const std::string & fileName) {
-            sf::Texture texture;
-            texture.loadFromFile(fileName);
-            return textures[name] = std::move(texture); //Could throw error on wrong name?
-        }
+        const sf::Texture & getTexture(const std::string & name) const;
 
-        const sf::Texture & getTexture(const std::string & name) const {
-            const auto& item = textures.find(name);
+        const sf::Texture & loadTextureFromImage(const std::string & name, const sf::Image & image);
 
-            if (item == textures.end()) {
-                std::cerr << "[VeX WARNING] Unable to get asset of type 'Texture' with name '" << name << "'.\n";
-            }
-            return item->second; //Second is the value, first should be the key
-        }
-
-        const sf::Texture & loadTextureFromImage(const std::string & name, const sf::Image & image){
-            const auto& [texture, isKeyNew] = textures.emplace(name, sf::Texture());
-
-            if (isKeyNew) {
-                texture->second.loadFromImage(image);
-            }
-            return texture->second;
-        }
-
-        void loadTexturesFromFolder(std::vector<std::string> & textureNames, const std::string & folderPath, float & progress, std::mutex & progressMutex){
-            std::unique_lock<std::mutex> progressLock(progressMutex, std::defer_lock);
-            float fileCount = countFilesInFolder(folderPath);
-            float iterator = 0.f;
-            //std::cout << fileCount << std::endl;
-            for(const auto & entry : fs::directory_iterator(folderPath)){
-                if(entry.path().extension() == ".png" || entry.path().extension() == ".jpg"){
-                    //std::cout << entry.path().string() << std::endl;
-                    loadTexture(entry.path().string(), entry.path().string());
-                    textureNames.push_back(entry.path().string());
-                }
-                iterator++;
-                progressLock.lock();
-                progress = iterator/fileCount;
-                //std::cout << "[loading thread] progress: " << progress << std::endl;
-                progressLock.unlock();
-            }
-        }
+        void loadTexturesFromFolder(std::vector<std::string> & textureNames, const std::string & folderPath, float & progress, std::mutex & progressMutex);
 
         //Texture factory
-        const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, const sf::Color & color){
-            sf::Image image;
-            image.create(dimensions.x, dimensions.y, color);
-            return loadTextureFromImage(name, image);
-        }
+        const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, const sf::Color & color);
 
         const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, 
-                                                const Color_Gradient & colors, const std::string & gradientDirection="LR"){
-            sf::Image image;
-            uint8_t* pixels = new uint8_t[dimensions.x*dimensions.y*4]; //Pixels in RGBA with one uint8_t per R, G, B or A.
-            //image.create(dimensions.x, dimensions.y, sf::Color::White);
-            if(gradientDirection == "LR"){
-                for(int i=0; i<dimensions.x; i++){
-                    for(int j=0; j<dimensions.y; j++){
-                        sf::Color color = colors.getColorAt(float(i)/float(dimensions.x));
-                        //if(j==0)std::cout << float(i)/float(dimensions.x) << "\n";
-                        //if(j==0)std::cout << color.toInteger() << "\n";
-                        //if(j==0)std::cout << unsigned(color.r) << " " << unsigned(color.g) << " " << unsigned(color.b) << "\n";
-                        pixels[(i+(j*dimensions.x))*4] = color.r;
-                        pixels[(i+(j*dimensions.x))*4+1] = color.g;
-                        pixels[(i+(j*dimensions.x))*4+2] = color.b;
-                        pixels[(i+(j*dimensions.x))*4+3] = 255;
-                        //std::cout << "i: " << i << " j: " << j << "\n";
-                        //image.setPixel(i, j, color);
-                    }
-                }
-            }else{
-                std::cout << "[VeX WARNING] unknown gradientDirection on a makeRectangleTexture function call.\n";
-                image.create(dimensions.x, dimensions.y, sf::Color::White);
-                return loadTextureFromImage(name, image);
-            }
-            image.create(dimensions.x, dimensions.y, pixels);
-            return loadTextureFromImage(name, image);
-        }
+                                                 const Color_Gradient & colors, const std::string & gradientDirection="LR");
     };
 
 }
