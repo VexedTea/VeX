@@ -5,7 +5,8 @@
 #include <memory>
 
 #include "particle.hpp"
-#include "particle_system.hpp"
+// #include "particle_system.hpp"
+#include "particle_system_thread.hpp"
 #include "engine.hpp"
 #include "utilities.hpp"
 
@@ -21,11 +22,7 @@ namespace VeX{
         float circleAngle;
         unsigned int primitiveTypeIndex;
         std::vector<sf::PrimitiveType> primitiveTypes;
-        std::unique_ptr<Particle_System> particleSystem;
-        std::unique_ptr<Particle_System> particleSystem1;
-        std::unique_ptr<Particle_System> particleSystem2;
-        std::unique_ptr<Particle_System> particleSystem3;
-        
+        std::vector<std::unique_ptr<Particle_System_Thread>> particleSystems;
     public:
         Particle_Demo(bool snapToScreenCenter=true, bool circlePaused=false);
 
@@ -36,6 +33,10 @@ namespace VeX{
         void update(float delta);
 
         void draw(float delta);
+
+        void pause()override;
+
+        void resume()override;
     };
 
 } // namespace VeX

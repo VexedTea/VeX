@@ -11,10 +11,7 @@ namespace VeX{
         circleAngle(0.f),
         primitiveTypeIndex(0),
         primitiveTypes({sf::PrimitiveType::Points, sf::PrimitiveType::Lines, sf::PrimitiveType::LineStrip, sf::PrimitiveType::Triangles, sf::PrimitiveType::TriangleStrip, sf::PrimitiveType::TriangleFan, sf::PrimitiveType::Quads}),
-        particleSystem(std::make_unique<Particle_System>()),
-        particleSystem1(std::make_unique<Particle_System>()),
-        particleSystem2(std::make_unique<Particle_System>()),
-        particleSystem3(std::make_unique<Particle_System>())            
+        particleSystems()
     {}
 
     void Particle_Demo::init(){
@@ -25,7 +22,9 @@ namespace VeX{
         engine->addKeybind("drawParticles", sf::Keyboard::Key::K);
         engine->addKeybind("nextPrimitiveType", sf::Keyboard::Key::Add);
         engine->addKeybind("prevPrimitiveType", sf::Keyboard::Key::Subtract);
-        particleSystem->setPosition(sf::Mouse::getPosition());
+        for(unsigned int i=0; i<6; i++){
+            particleSystems.push_back(std::make_unique<Particle_System_Thread>());
+        }
     }
 
     void Particle_Demo::handleInput(){
@@ -56,10 +55,9 @@ namespace VeX{
             }else{
                 primitiveTypeIndex++;
             }
-            particleSystem->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+            for(unsigned int i=0; i<particleSystems.size(); i++){
+                particleSystems[i]->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+            }
         }
 
         if(engine->getKeybind("prevPrimitiveType")->onKeyDown()){
@@ -68,10 +66,9 @@ namespace VeX{
             }else{
                 primitiveTypeIndex--;
             }
-            particleSystem->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            particleSystem1->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            particleSystem2->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            particleSystem3->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+            for(unsigned int i=0; i<particleSystems.size(); i++){
+                particleSystems[i]->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+            }
         }
 
         sf::Event event;
@@ -90,69 +87,71 @@ namespace VeX{
         }
         
         if(!circlePaused){
-            particleSystem->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle));
-            particleSystem1->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle+90.f));
-            particleSystem2->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle+180.f));
-            particleSystem3->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle+270.f));
+            for(unsigned int i=0; i<particleSystems.size(); i++){
+                particleSystems[i]->setPosition(getPositionOnCircle(circleCenter, 400.f, circleAngle + (i * (360.f/particleSystems.size()))));
+            }
             circleAngle += 1.65 * 360.f * delta;
             if(circleAngle >= 360.f){
                 circleAngle -= 360.f;
             }   //0.215 & 500.f highest known to inhibit effect and 0.191 smallest known
         }
 
-        if(!maxParticleCountReached && engine->getFramerate() > 75.f && engine->settings->currentParticleCount < 40'000){
-            for(unsigned int i=0; i<20; i++){
-                particleSystem->addParticle(std::make_unique<Particle>(particleSystem->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
+        if(!maxParticleCountReached && engine->getFramerate() > 75.f && engine->settings->currentParticleCount < 500'000){
+            for(unsigned int i=0; i<25; i++){
+                for(unsigned int i=0; i<particleSystems.size(); i++){
+                    particleSystems[i]->addParticle(std::make_unique<Particle>(particleSystems[i]->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                     -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
                                                                                     Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                particleSystem1->addParticle(std::make_unique<Particle>(particleSystem1->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
-                                                                                    -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
-                                                                                    Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                particleSystem2->addParticle(std::make_unique<Particle>(particleSystem2->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
-                                                                                    -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
-                                                                                    Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                particleSystem3->addParticle(std::make_unique<Particle>(particleSystem3->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
-                                                                                    -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
-                                                                                    Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
-                engine->settings->currentParticleCount += 4;
+                }
+                engine->settings->currentParticleCount += particleSystems.size();
             }
         }else if(engine->getFramerate() < 62.f){
-            particleSystem->removeOldestParticle();
-            particleSystem1->removeOldestParticle();
-            particleSystem2->removeOldestParticle();
-            particleSystem3->removeOldestParticle();
-            engine->settings->currentParticleCount -= 4;
+            for(unsigned int i=0; i<particleSystems.size(); i++){
+                particleSystems[i]->removeOldestParticle();
+            }
+            engine->settings->currentParticleCount -= particleSystems.size();
             maxParticleCountReached = true;
         }else{
             maxParticleCountReached = true;
         }
-
-        particleSystem->update(delta);
-        particleSystem1->update(delta);
-        particleSystem2->update(delta);
-        particleSystem3->update(delta);
+        for(unsigned int i=0; i<particleSystems.size(); i++){
+            particleSystems[i]->update(delta);
+        }
+        for(unsigned int i=0; i<particleSystems.size(); i++){
+            particleSystems[i]->waitForUpdateDone();
+        }
     }
 
     void Particle_Demo::draw(float delta){
         engine->window.clear();
 
         if(drawParticles){
-            particleSystem->draw(delta);
-            particleSystem1->draw(delta);
-            particleSystem2->draw(delta);
-            particleSystem3->draw(delta);
+            for(unsigned int i=0; i<particleSystems.size(); i++){
+                particleSystems[i]->draw(delta);
+            }
         }
         
         if(showCenters){
-            particleSystem->drawCenterPoint();
-            particleSystem1->drawCenterPoint();
-            particleSystem2->drawCenterPoint();
-            particleSystem3->drawCenterPoint();
+            for(unsigned int i=0; i<particleSystems.size(); i++){
+                particleSystems[i]->drawCenterPoint();
+            }
         }
 
         engine->displayFramerate();
         engine->displayCurrentParticleCount();
         engine->window.display();
+    }
+
+    void Particle_Demo::pause(){
+        for(unsigned int i=0; i<particleSystems.size(); i++){
+            particleSystems[i]->pause();
+        }
+    }
+
+    void Particle_Demo::resume(){
+        for(unsigned int i=0; i<particleSystems.size(); i++){
+            particleSystems[i]->resume();
+        }
     }
 
 } // namespace VeX
