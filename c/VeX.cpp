@@ -18,11 +18,9 @@ int main(){
     VeX::engine->window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     VeX::engine->settings->screenWidth = desktop.width;
     VeX::engine->settings->screenHeight = desktop.height;
-
-    srand(time(NULL));
     
-    VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(3.f), std::make_unique<VeX::Particle_Demo>()), false);
-    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(3.f), std::make_unique<VeX::Grav>()), false);
+    VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Particle_Demo>()), false);
+    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Grav>()), false);
     VeX::engine->run();
 
     //Can do stuff here to be done when closing, like saving a config/savefile or smth

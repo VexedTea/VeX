@@ -9,7 +9,10 @@ namespace VeX{
         maxParticleCount(32'000),
         //maxParticleCount(2560*1440),
         currentParticleCount(0),
-        defaultParticleMotionDampening(Definition::defaultParticleMotionDampening)
+        defaultParticleMotionDampening(Definition::defaultParticleMotionDampening),
+        backgroundColor(0,0,0),
+        clearWindow(true),
+        drawWindow(true)
     {
         //Config loading stuff soon™
     }

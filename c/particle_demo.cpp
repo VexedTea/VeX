@@ -15,62 +15,55 @@ namespace VeX{
     {}
 
     void Particle_Demo::init(){
-        engine->addKeybind("resetState", sf::Keyboard::Key::Backspace);
-        engine->addKeybind("snapToScreenCenterToggle", sf::Keyboard::Key::O);
-        engine->addKeybind("circlePauseToggle", sf::Keyboard::Key::P);
-        engine->addKeybind("showCenters", sf::Keyboard::Key::L);
-        engine->addKeybind("drawParticles", sf::Keyboard::Key::K);
-        engine->addKeybind("nextPrimitiveType", sf::Keyboard::Key::Add);
-        engine->addKeybind("prevPrimitiveType", sf::Keyboard::Key::Subtract);
+        engine->addKeybind("resetState", sf::Keyboard::Key::Backspace, KeybindCondition::OnKeyDown, 
+            [&](){
+                engine->settings->currentParticleCount = 0;
+                engine->addState(std::make_unique<VeX::Particle_Demo>(snapToScreenCenter), true);
+            });
+        engine->addKeybind("snapToScreenCenterToggle", sf::Keyboard::Key::O, KeybindCondition::OnKeyDown, 
+            [&](){
+                snapToScreenCenter = !snapToScreenCenter;
+            });
+        engine->addKeybind("circlePauseToggle", sf::Keyboard::Key::P, KeybindCondition::OnKeyDown, 
+            [&](){
+                circlePaused = !circlePaused;
+            });
+        engine->addKeybind("showCenters", sf::Keyboard::Key::L, KeybindCondition::OnKeyDown, 
+            [&](){
+                showCenters = !showCenters;
+            });
+        engine->addKeybind("drawParticles", sf::Keyboard::Key::K, KeybindCondition::OnKeyDown, 
+            [&](){
+                drawParticles = !drawParticles;
+            });
+        engine->addKeybind("nextPrimitiveType", sf::Keyboard::Key::Add, KeybindCondition::OnKeyDown, 
+            [&](){
+                if(primitiveTypeIndex >= primitiveTypes.size()-1){
+                    primitiveTypeIndex = 0;
+                }else{
+                    primitiveTypeIndex++;
+                }
+                for(unsigned int i=0; i<particleSystems.size(); i++){
+                    particleSystems[i]->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                }
+            });
+        engine->addKeybind("prevPrimitiveType", sf::Keyboard::Key::Subtract, KeybindCondition::OnKeyDown, 
+            [&](){
+                if(primitiveTypeIndex < 1){
+                    primitiveTypeIndex = primitiveTypes.size()-1;
+                }else{
+                    primitiveTypeIndex--;
+                }
+                for(unsigned int i=0; i<particleSystems.size(); i++){
+                    particleSystems[i]->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
+                }
+            });
         for(unsigned int i=0; i<6; i++){
             particleSystems.push_back(std::make_unique<Particle_System_Thread>());
         }
     }
 
     void Particle_Demo::handleInput(){
-        if(engine->getKeybind("resetState")->onKeyDown()){
-            engine->settings->currentParticleCount = 0;
-            engine->addState(std::make_unique<VeX::Particle_Demo>(snapToScreenCenter), true);
-        }
-
-        if(engine->getKeybind("snapToScreenCenterToggle")->onKeyDown()){
-            snapToScreenCenter = !snapToScreenCenter;
-        }
-
-        if(engine->getKeybind("circlePauseToggle")->onKeyDown()){
-            circlePaused = !circlePaused;
-        }
-
-        if(engine->getKeybind("showCenters")->onKeyDown()){
-            showCenters = !showCenters;
-        }
-
-        if(engine->getKeybind("drawParticles")->onKeyDown()){
-            drawParticles = !drawParticles;
-        }
-
-        if(engine->getKeybind("nextPrimitiveType")->onKeyDown()){
-            if(primitiveTypeIndex >= primitiveTypes.size()-1){
-                primitiveTypeIndex = 0;
-            }else{
-                primitiveTypeIndex++;
-            }
-            for(unsigned int i=0; i<particleSystems.size(); i++){
-                particleSystems[i]->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            }
-        }
-
-        if(engine->getKeybind("prevPrimitiveType")->onKeyDown()){
-            if(primitiveTypeIndex < 1){
-                primitiveTypeIndex = primitiveTypes.size()-1;
-            }else{
-                primitiveTypeIndex--;
-            }
-            for(unsigned int i=0; i<particleSystems.size(); i++){
-                particleSystems[i]->setPrimitiveType(primitiveTypes[primitiveTypeIndex]);
-            }
-        }
-
         sf::Event event;
         while (engine->window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
@@ -123,8 +116,6 @@ namespace VeX{
     }
 
     void Particle_Demo::draw(float delta){
-        engine->window.clear();
-
         if(drawParticles){
             for(unsigned int i=0; i<particleSystems.size(); i++){
                 particleSystems[i]->draw(delta);
@@ -139,7 +130,6 @@ namespace VeX{
 
         engine->displayFramerate();
         engine->displayCurrentParticleCount();
-        engine->window.display();
     }
 
     void Particle_Demo::pause(){

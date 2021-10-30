@@ -33,11 +33,7 @@ namespace VeX{
     }
     
     void Splash_Screen::draw(float ){
-        engine->window.clear();
-        
         engine->window.draw(splash);
-        
-        engine->window.display();
     }
 
 } // namespace VeX

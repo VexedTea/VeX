@@ -3,7 +3,7 @@
 namespace VeX{
 
     Engine::Engine(sf::RenderWindow & window):
-        State_Machine(),
+        State_Manager(),
         Asset_Manager(),
         delta(1.f/60.f),
         framerate(0.f),
@@ -49,8 +49,10 @@ namespace VeX{
         interpolation = accumulator/delta;
 
         framerate = 60.f/(frametimes.front().asSeconds() - frametimes.back().asSeconds());
-
+        
+        if(settings->clearWindow){window.clear(settings->backgroundColor);}
         getActiveState()->draw(interpolation);
+        if(settings->drawWindow){window.display();}
     }
 
     void Engine::run(){ //Have a look at the frametiming stuff again

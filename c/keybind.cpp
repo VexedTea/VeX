@@ -2,15 +2,31 @@
 
 namespace VeX{
     
-    Keybind::Keybind(const sf::Keyboard::Key & key):
+    Keybind::Keybind(const sf::Keyboard::Key & key, KeybindCondition conditionType, std::function<void()> action):
         key(key),
+        action(action),
         keyPressed(sf::Keyboard::isKeyPressed(key)),
         prev(keyPressed)
-    {}
+    {
+        switch(conditionType){
+        case KeybindCondition::KeyPressed:
+            condition = [&]()bool{return getKeyPressed();};
+            break;
+        case KeybindCondition::OnKeyDown:
+            condition = [&]()bool{return onKeyDown();};
+            break;
+        case KeybindCondition::OnKeyUp:
+            condition = [&]()bool{return onKeyUp();};
+            break;
+        }
+    }
 
     void Keybind::update(){
         prev = keyPressed;
         keyPressed = sf::Keyboard::isKeyPressed(key);
+        if(condition()){
+            action();
+        }
     }
 
     bool Keybind::getKeyPressed(){
