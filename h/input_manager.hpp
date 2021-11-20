@@ -15,7 +15,7 @@ namespace VeX{
     class Input_Manager{
     protected:
         std::stack<std::map<std::string, std::unique_ptr<Keybind>>> keybinds;
-
+        std::map<std::string, std::unique_ptr<Keybind>> globalKeybinds;
     private:
         bool leftClickPressed = false;
         bool leftClickPrev = false;
@@ -29,6 +29,11 @@ namespace VeX{
                         const sf::Keyboard::Key & key, 
                         KeybindCondition condition, 
                         std::function<void()> action);
+
+        void addGlobalKeybind(const std::string & name, 
+                                            const sf::Keyboard::Key & key, 
+                                            KeybindCondition condition, 
+                                            std::function<void()> action);
 
         std::unique_ptr<Keybind> & getKeybind(const std::string & name);
 

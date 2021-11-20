@@ -4,6 +4,7 @@
 #include <memory>
 #include <stack>
 #include <map>
+#include "pause_menu.hpp"
 #include "state_manager.hpp"
 #include "asset_manager.hpp"
 #include "settings.hpp"
@@ -13,6 +14,7 @@ namespace VeX{
 
     class Engine : public State_Manager, public Asset_Manager{
     private:
+        std::unique_ptr<State> pauseMenu;
         const float delta;
         float framerate;
         Ringbuff<sf::Time> frametimes;
@@ -26,6 +28,7 @@ namespace VeX{
 
         //float highestFrameTime;//Will introduce proper runtime statistics and stuff sometime
         //float startTime;
+        bool pauseMenuOpen;
         sf::RenderWindow & window;
         Settings_Ptr settings;
 

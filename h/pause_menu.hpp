@@ -6,12 +6,13 @@
 
 #include "engine.hpp"
 #include "state.hpp"
+#include "transform_util.hpp"
 
 namespace VeX{
 
     class Pause_Menu : public State{
     private:
-        
+        sf::Sprite background;
     public:
         Pause_Menu();
         

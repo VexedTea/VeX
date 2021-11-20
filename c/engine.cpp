@@ -5,11 +5,13 @@ namespace VeX{
     Engine::Engine(sf::RenderWindow & window):
         State_Manager(),
         Asset_Manager(),
+        pauseMenu(std::make_unique<Pause_Menu>()),
         delta(1.f/60.f),
         framerate(0.f),
         frametimes(60),
         //highestFrameTime(0),
         //startTime(clock.getElapsedTime().asSeconds()),
+        pauseMenuOpen(false),
         window(window),
         settings(std::make_unique<Settings>())
     {
@@ -43,7 +45,9 @@ namespace VeX{
         while (accumulator >= delta) {
             updateInputs();
             getActiveState()->handleInput();
+            if(pauseMenuOpen){pauseMenu->handleInput();}
             getActiveState()->update(delta);
+            if(pauseMenuOpen){pauseMenu->update(delta);}
             accumulator -= delta;
         }
         interpolation = accumulator/delta;
@@ -52,6 +56,7 @@ namespace VeX{
         
         if(settings->clearWindow){window.clear(settings->backgroundColor);}
         getActiveState()->draw(interpolation);
+        if(pauseMenuOpen){pauseMenu->draw(delta);}
         if(settings->drawWindow){window.display();}
     }
 
@@ -59,6 +64,7 @@ namespace VeX{
         float newTime, frameTime, interpolation;
         float currentTime = clock.getElapsedTime().asSeconds();
         float accumulator = 0.0f;
+        pauseMenu->init();
         while (window.isOpen()){
             //std::cout << "run" << std::endl;
             processStateChanges();

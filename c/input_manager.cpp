@@ -3,6 +3,9 @@
 namespace VeX{
 
     void Input_Manager::updateInputs(){
+        for (auto const& keybind : globalKeybinds){
+            keybind.second->update();
+        }
         for (auto const& keybind : keybinds.top()){
             keybind.second->update();
         }
@@ -17,6 +20,13 @@ namespace VeX{
                     KeybindCondition condition, 
                     std::function<void()> action){
         keybinds.top().emplace(name, std::make_unique<Keybind>(key, condition, action));
+    }
+
+    void Input_Manager::addGlobalKeybind(const std::string & name, 
+                    const sf::Keyboard::Key & key, 
+                    KeybindCondition condition, 
+                    std::function<void()> action){
+        globalKeybinds.emplace(name, std::make_unique<Keybind>(key, condition, action));
     }
 
     std::unique_ptr<Keybind> & Input_Manager::getKeybind(const std::string & name){

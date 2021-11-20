@@ -26,6 +26,7 @@ namespace VeX{
         bool drawWindow;
 
         sf::Vector2f getScreenCenter();
+        sf::Vector2f getScreenSize();
     };
 
     using Settings_Ptr = std::unique_ptr<Settings>;

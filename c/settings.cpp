@@ -21,4 +21,8 @@ namespace VeX{
         return sf::Vector2f(float(screenWidth)/2.f, float(screenHeight)/2.f);
     }
 
+    sf::Vector2f Settings::getScreenSize(){
+        return sf::Vector2f(float(screenWidth), float(screenHeight));
+    }
+
 } // namespace VeX
