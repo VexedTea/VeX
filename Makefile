@@ -13,6 +13,7 @@ FLAGS = -DSFML_STATIC -IC:\\Users\\rick2\\OneDrive\\Code\\SFML\\SFML-2.5.1\\incl
 RELEASE =
 
 SRCS := $(wildcard c/*.cpp)
+SRCS += $(wildcard c/*/*.cpp)
 OBJECTS := $(SRCS:c/%.cpp=o/%.o)
 
 all: VeX
@@ -33,4 +34,5 @@ o/%.o: c/%.cpp
 clean:
 	@echo "Cleaning up..."
 	del "o\*.o" 
+	del "o\ui\*.o" 
 # the 'del' probably needs to be changed for linux users. This was made for a windows system.

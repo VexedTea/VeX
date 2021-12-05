@@ -95,6 +95,13 @@ inline sf::Vector2f operator/(
     return {left.x / right, left.y / right};
 }
 
+inline sf::Vector2f operator|(
+    const sf::FloatRect& left,
+    float right
+) {
+    return {left.width / right, left.height / right};
+}
+
 inline sf::Vector2f operator/(
     const sf::Vector2u& left,
     const sf::Vector2u& right

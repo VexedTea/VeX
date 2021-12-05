@@ -44,6 +44,8 @@ namespace VeX{
         bool onRightClick();
 
         bool onRightClickRelease();
+
+        sf::Vector2f getMousePos(const sf::Window & window);
     };
 }
 #endif // __INPUT_MANAGER_HPP__

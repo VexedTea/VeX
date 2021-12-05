@@ -5,13 +5,13 @@ namespace VeX{
     Engine::Engine(sf::RenderWindow & window):
         State_Manager(),
         Asset_Manager(),
-        pauseMenu(std::make_unique<Pause_Menu>()),
         delta(1.f/60.f),
         framerate(0.f),
         frametimes(60),
         //highestFrameTime(0),
         //startTime(clock.getElapsedTime().asSeconds()),
         pauseMenuOpen(false),
+        pauseMenu(),
         window(window),
         settings(std::make_unique<Settings>())
     {
@@ -97,6 +97,10 @@ namespace VeX{
     void Engine::displayCurrentParticleCount(){
         currentParticleCountText.setString(std::to_string(settings->currentParticleCount));
         window.draw(currentParticleCountText);
+    }
+
+    void Engine::registerPauseMenu(State_Ptr pm){
+        pauseMenu = std::move(pm);
     }
 
     sf::RenderWindow window;

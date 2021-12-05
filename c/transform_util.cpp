@@ -1,6 +1,7 @@
 #include "../h/transform_util.hpp"
 
 namespace VeX{
+namespace util{
 
     sf::Sprite snapTo(sf::Sprite sprite, sf::Vector2f pos, sf::Vector2f scale){
         sprite.setOrigin(sprite.getTexture()->getSize()/2.f);
@@ -21,4 +22,5 @@ namespace VeX{
         return snapTo(sprite, {xPos, yPos}, {xScale, yScale});
     }
 
+}
 } // namespace VeX

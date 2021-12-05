@@ -60,4 +60,8 @@ namespace VeX{
         gravSystem.draw(delta);
     }
 
+    void Grav::stop(){
+        engine->settings->backgroundColor = sf::Color::Black;
+    }
+
 } // namespace VeX

@@ -37,6 +37,8 @@ namespace VeX{
         void pause()override;
 
         void resume()override;
+
+        void stop()override;
     };
 
 } // namespace VeX

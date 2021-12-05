@@ -15,6 +15,7 @@ namespace VeX{
     bool State_Manager::processStateChanges(){
         bool didNotRemove = true;
         if(isRemoving && !statesStack.empty()){
+            statesStack.top()->stop();
             statesStack.pop();
             keybinds.pop();
             if(!statesStack.empty()){
@@ -26,6 +27,7 @@ namespace VeX{
         if(isAdding){
             if(!statesStack.empty()){
                 if(isReplacing){
+                    statesStack.top()->stop();
                     statesStack.pop();
                     keybinds.pop();
                 }else{

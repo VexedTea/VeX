@@ -144,4 +144,8 @@ namespace VeX{
         }
     }
 
+    void Particle_Demo::stop(){
+        engine->settings->currentParticleCount = 0;
+    }
+
 } // namespace VeX

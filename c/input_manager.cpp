@@ -53,5 +53,10 @@ namespace VeX{
     bool Input_Manager::onRightClickRelease(){
         return (rightClickPrev && !rightClickPressed);
     }
+
+    sf::Vector2f Input_Manager::getMousePos(const sf::Window & window){
+        sf::Vector2i intPos(sf::Mouse::getPosition(window));
+        return {static_cast<float>(intPos.x), static_cast<float>(intPos.y)};
+    }
     
 }
