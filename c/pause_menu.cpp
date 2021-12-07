@@ -47,8 +47,11 @@ namespace VeX{
     }
 
     void Pause_Menu::arrangeButtons(){
-        int colCount = int(sqrt(buttons.size()));
+        int colCount = sqrt(buttons.size());
         int rowCount = buttons.size()/colCount;
+        if(int(buttons.size()) > colCount * rowCount){
+            colCount = int(colCount)+1;
+        }
         int colNr{0}; int rowNr{0};
         for(unsigned i=0; i<buttons.size(); i++){
             if(rowNr >= rowCount){

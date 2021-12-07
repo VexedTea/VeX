@@ -40,10 +40,12 @@ namespace UI{
                 if(contains(engine->getMousePos(engine->window))){
                     if(engine->onLeftClickRelease()){
                         sprite.setTexture(textures.pressed);
+                        sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(textures.pressed.getSize())));
                         sprite = util::snapTo(sprite, pos, scale);
                         state = Button_States::Pressed;
                     }else{
                         sprite.setTexture(textures.highlighted);
+                        sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(textures.highlighted.getSize())));
                         sprite = util::snapTo(sprite, pos, scale);
                         state = Button_States::Highlighted;
                     }
@@ -53,10 +55,12 @@ namespace UI{
                 buttonText.setFillColor(sf::Color{21, 232, 255});
                 if(!contains(engine->getMousePos(engine->window))){
                     sprite.setTexture(textures.base);
+                    sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(textures.base.getSize())));
                     sprite = util::snapTo(sprite, pos, scale);
                     state = Button_States::Base;
                 }else if(engine->onLeftClickRelease()){
                     sprite.setTexture(textures.pressed);
+                    sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(textures.pressed.getSize())));
                     sprite = util::snapTo(sprite, pos, scale);
                     state = Button_States::Pressed;
                 }
@@ -65,10 +69,12 @@ namespace UI{
                 action();
                 if(!contains(engine->getMousePos(engine->window))){
                     sprite.setTexture(textures.base);
+                    sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(textures.base.getSize())));
                     sprite = util::snapTo(sprite, pos, scale);
                     state = Button_States::Base;
                 }else{
                     sprite.setTexture(textures.highlighted);
+                    sprite.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(textures.highlighted.getSize())));
                     sprite = util::snapTo(sprite, pos, scale);
                     state = Button_States::Highlighted;
                 }
