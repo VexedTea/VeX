@@ -8,6 +8,8 @@ namespace VeX{
     {}
     
     void Grav::init(){
+        engine->settings->backgroundColor = sf::Color(13, 0, 60);
+
         // gravSystem.addBody(std::make_unique<Circle_Object>(
         //     engine->settings->getScreenCenter(),
         //     50.f,
@@ -55,11 +57,11 @@ namespace VeX{
     }
     
     void Grav::draw(float delta){
-        engine->window.clear(sf::Color(13, 0, 60));
-        
         gravSystem.draw(delta);
-        
-        engine->window.display();
+    }
+
+    void Grav::stop(){
+        engine->settings->backgroundColor = sf::Color::Black;
     }
 
 } // namespace VeX

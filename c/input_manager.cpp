@@ -3,7 +3,10 @@
 namespace VeX{
 
     void Input_Manager::updateInputs(){
-        for (auto const& keybind : keybinds){
+        for (auto const& keybind : globalKeybinds){
+            keybind.second->update();
+        }
+        for (auto const& keybind : keybinds.top()){
             keybind.second->update();
         }
         leftClickPrev = leftClickPressed;
@@ -12,14 +15,24 @@ namespace VeX{
         rightClickPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
     }
 
-    void Input_Manager::addKeybind(const std::string & name, const sf::Keyboard::Key & key){
-        keybinds.emplace(name, std::make_unique<Keybind>(key));
+    void Input_Manager::addKeybind(const std::string & name, 
+                    const sf::Keyboard::Key & key, 
+                    KeybindCondition condition, 
+                    std::function<void()> action){
+        keybinds.top().emplace(name, std::make_unique<Keybind>(key, condition, action));
+    }
+
+    void Input_Manager::addGlobalKeybind(const std::string & name, 
+                    const sf::Keyboard::Key & key, 
+                    KeybindCondition condition, 
+                    std::function<void()> action){
+        globalKeybinds.emplace(name, std::make_unique<Keybind>(key, condition, action));
     }
 
     std::unique_ptr<Keybind> & Input_Manager::getKeybind(const std::string & name){
-        const auto& item = keybinds.find(name);
+        const auto& item = keybinds.top().find(name);
 
-        if (item == keybinds.end()) {
+        if (item == keybinds.top().end()) {
             std::cerr << "[VeX WARNING] Unable to get asset of type 'Keybind' with name '" << name << "'.\n";
         }
         return item->second; //Second is the value, first should be the key
@@ -39,6 +52,11 @@ namespace VeX{
 
     bool Input_Manager::onRightClickRelease(){
         return (rightClickPrev && !rightClickPressed);
+    }
+
+    sf::Vector2f Input_Manager::getMousePos(const sf::Window & window){
+        sf::Vector2i intPos(sf::Mouse::getPosition(window));
+        return {static_cast<float>(intPos.x), static_cast<float>(intPos.y)};
     }
     
 }

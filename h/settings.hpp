@@ -21,7 +21,12 @@ namespace VeX{
         unsigned int currentParticleCount;
         sf::Vector2f defaultParticleMotionDampening;
 
+        sf::Color backgroundColor;
+        bool clearWindow;
+        bool drawWindow;
+
         sf::Vector2f getScreenCenter();
+        sf::Vector2f getScreenSize();
     };
 
     using Settings_Ptr = std::unique_ptr<Settings>;

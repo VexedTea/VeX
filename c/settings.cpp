@@ -9,13 +9,20 @@ namespace VeX{
         maxParticleCount(32'000),
         //maxParticleCount(2560*1440),
         currentParticleCount(0),
-        defaultParticleMotionDampening(Definition::defaultParticleMotionDampening)
+        defaultParticleMotionDampening(Definition::defaultParticleMotionDampening),
+        backgroundColor(0,0,0),
+        clearWindow(true),
+        drawWindow(true)
     {
         //Config loading stuff soon™
     }
 
     sf::Vector2f Settings::getScreenCenter(){
         return sf::Vector2f(float(screenWidth)/2.f, float(screenHeight)/2.f);
+    }
+
+    sf::Vector2f Settings::getScreenSize(){
+        return sf::Vector2f(float(screenWidth), float(screenHeight));
     }
 
 } // namespace VeX

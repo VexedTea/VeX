@@ -4,15 +4,15 @@
 #include <memory>
 #include <stack>
 #include <map>
-#include "state_machine.hpp"
+//#include "pause_menu.hpp"
+#include "state_manager.hpp"
 #include "asset_manager.hpp"
-#include "input_manager.hpp"
 #include "settings.hpp"
 #include "utilities.hpp"
 
 namespace VeX{
 
-    class Engine : public State_Machine, public Asset_Manager, public Input_Manager{
+    class Engine : public State_Manager, public Asset_Manager{
     private:
         const float delta;
         float framerate;
@@ -27,6 +27,8 @@ namespace VeX{
 
         //float highestFrameTime;//Will introduce proper runtime statistics and stuff sometime
         //float startTime;
+        bool pauseMenuOpen;
+        std::unique_ptr<State> pauseMenu;
         sf::RenderWindow & window;
         Settings_Ptr settings;
 
@@ -41,6 +43,8 @@ namespace VeX{
         void displayFramerate();
 
         void displayCurrentParticleCount();
+
+        void registerPauseMenu(State_Ptr pm);
     };
 
     using Engine_Ptr = std::shared_ptr<Engine>;

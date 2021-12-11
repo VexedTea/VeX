@@ -3,13 +3,15 @@
 namespace VeX{
 
     Engine::Engine(sf::RenderWindow & window):
-        State_Machine(),
+        State_Manager(),
         Asset_Manager(),
         delta(1.f/60.f),
         framerate(0.f),
         frametimes(60),
         //highestFrameTime(0),
         //startTime(clock.getElapsedTime().asSeconds()),
+        pauseMenuOpen(false),
+        pauseMenu(),
         window(window),
         settings(std::make_unique<Settings>())
     {
@@ -43,20 +45,26 @@ namespace VeX{
         while (accumulator >= delta) {
             updateInputs();
             getActiveState()->handleInput();
+            if(pauseMenuOpen){pauseMenu->handleInput();}
             getActiveState()->update(delta);
+            if(pauseMenuOpen){pauseMenu->update(delta);}
             accumulator -= delta;
         }
         interpolation = accumulator/delta;
 
         framerate = 60.f/(frametimes.front().asSeconds() - frametimes.back().asSeconds());
-
+        
+        if(settings->clearWindow){window.clear(settings->backgroundColor);}
         getActiveState()->draw(interpolation);
+        if(pauseMenuOpen){pauseMenu->draw(delta);}
+        if(settings->drawWindow){window.display();}
     }
 
     void Engine::run(){ //Have a look at the frametiming stuff again
         float newTime, frameTime, interpolation;
         float currentTime = clock.getElapsedTime().asSeconds();
         float accumulator = 0.0f;
+        pauseMenu->init();
         while (window.isOpen()){
             //std::cout << "run" << std::endl;
             processStateChanges();
@@ -89,6 +97,10 @@ namespace VeX{
     void Engine::displayCurrentParticleCount(){
         currentParticleCountText.setString(std::to_string(settings->currentParticleCount));
         window.draw(currentParticleCountText);
+    }
+
+    void Engine::registerPauseMenu(State_Ptr pm){
+        pauseMenu = std::move(pm);
     }
 
     sf::RenderWindow window;

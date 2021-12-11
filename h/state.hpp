@@ -43,6 +43,8 @@ namespace VeX{
         /// \details
         /// This function should be overriden whenever a state needs to cleanly resume things when the state above in the stack gets removed. Usually goes paired with an implementation for the pause function.
         virtual void resume(){}
+
+        virtual void stop(){}
     };
 
 }

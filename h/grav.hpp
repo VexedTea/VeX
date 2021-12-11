@@ -16,13 +16,15 @@ namespace VeX{
     public:
         Grav();
         
-        void init();
+        void init()override;
         
-        void handleInput();
+        void handleInput()override;
         
-        void update(float delta);
+        void update(float delta)override;
         
-        void draw(float delta);
+        void draw(float delta)override;
+
+        void stop()override;
     };
 
 } // namespace VeX
