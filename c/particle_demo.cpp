@@ -61,6 +61,8 @@ namespace VeX{
         for(unsigned int i=0; i<6; i++){
             particleSystems.push_back(std::make_unique<Particle_System_Thread>());
         }
+        auto shader = engine->loadShader("particleImageMap", "assets/shaders/particle_image_map");
+        shader->setUniform("texture", engine->loadTexture("testImage", "assets/textures/test_image.png"));
     }
 
     void Particle_Demo::handleInput(){
@@ -118,7 +120,7 @@ namespace VeX{
     void Particle_Demo::draw(float delta){
         if(drawParticles){
             for(unsigned int i=0; i<particleSystems.size(); i++){
-                particleSystems[i]->draw(delta);
+                particleSystems[i]->draw(delta, *engine->loadVertexShader("particleImageMap", "assets/shaders/particle_image_map"));
             }
         }
         

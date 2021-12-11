@@ -12,6 +12,11 @@
 #include "../h/grav.hpp"
 
 int main(){
+    if (!sf::Shader::isAvailable()){
+        std::cout << "Fatal: No shader support on system.\n";
+        exit(1);
+    }
+
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     VeX::engine->window.create(desktop, "VeX", sf::Style::None /*sf::Style::Close | sf::Style::Titlebar | sf::Style::Fullscreen*/);
     sf::Image icon;
@@ -31,7 +36,6 @@ int main(){
     VeX::engine->registerPauseMenu(std::move(pauseMenu));
 
     VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Particle_Demo>()), false);
-    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Grav>()), false);
     VeX::engine->run();
 
     //Can do stuff here to be done when closing, like saving a config/savefile or smth

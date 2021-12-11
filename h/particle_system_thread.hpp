@@ -29,7 +29,7 @@ namespace VeX{
 
         void resume();
 
-        void draw(float delta);
+        void draw(float delta, const sf::Shader & shader);
 
         void drawCenterPoint();
 

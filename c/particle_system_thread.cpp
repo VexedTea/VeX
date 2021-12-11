@@ -41,10 +41,10 @@ namespace VeX{
         psThread = std::thread(&Particle_System_Thread::run, this);
     }
 
-    void Particle_System_Thread::draw(float delta){
+    void Particle_System_Thread::draw(float delta, const sf::Shader & shader){
         std::lock_guard<std::mutex> lock(psMutex);
-        particleSystem.draw(delta); // I am well aware this is being ran in whatever thread calls this function.
-    }                               // There is a limitation with SFML where only one thread can access the window at a time, so to be safe, I do all drawing in one thread.
+        particleSystem.draw(delta, shader); // I am well aware this is being ran in whatever thread calls this function.
+    }                                       // There is a limitation with SFML where only one thread can access the window at a time, so to be safe, I do all drawing in one thread.
 
     void Particle_System_Thread::drawCenterPoint(){
         std::lock_guard<std::mutex> lock(psMutex);
