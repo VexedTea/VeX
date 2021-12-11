@@ -1,8 +1,8 @@
-#include "../h/particle_demo.hpp"
+#include "../../h/demo/ptm_shader_demo.hpp"
 
 namespace VeX{
 
-    Particle_Demo::Particle_Demo(bool snapToScreenCenter, bool circlePaused):
+    PTM_Shader_Demo::PTM_Shader_Demo(bool snapToScreenCenter, bool circlePaused):
         snapToScreenCenter(snapToScreenCenter),
         circlePaused(circlePaused),
         showCenters(false),
@@ -14,11 +14,11 @@ namespace VeX{
         particleSystems()
     {}
 
-    void Particle_Demo::init(){
+    void PTM_Shader_Demo::init(){
         engine->addKeybind("resetState", sf::Keyboard::Key::Backspace, KeybindCondition::OnKeyDown, 
             [&](){
                 engine->settings->currentParticleCount = 0;
-                engine->addState(std::make_unique<VeX::Particle_Demo>(snapToScreenCenter), true);
+                engine->addState(std::make_unique<VeX::PTM_Shader_Demo>(snapToScreenCenter), true);
             });
         engine->addKeybind("snapToScreenCenterToggle", sf::Keyboard::Key::O, KeybindCondition::OnKeyDown, 
             [&](){
@@ -69,7 +69,7 @@ namespace VeX{
         shader->setUniform("textureSize", vector2uToVector2f(shaderTexture.getSize()));
     }
 
-    void Particle_Demo::handleInput(){
+    void PTM_Shader_Demo::handleInput(){
         sf::Event event;
         while (engine->window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
@@ -77,7 +77,7 @@ namespace VeX{
         }
     }
 
-    void Particle_Demo::update(float delta){
+    void PTM_Shader_Demo::update(float delta){
         sf::Vector2f circleCenter;
         if(!snapToScreenCenter){
             circleCenter = vector2iToVector2f(sf::Mouse::getPosition(engine->window));
@@ -100,7 +100,7 @@ namespace VeX{
                 for(unsigned int i=0; i<particleSystems.size(); i++){
                     particleSystems[i]->addParticle(std::make_unique<Particle>(particleSystems[i]->getPosition() + sf::Vector2f{-100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2))),
                                                                                     -100 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(100*2)))}, Definition::defaultParticleMotionDampening,
-                                                                                    Color_Gradient({{102, 31, 196}, {21, 232, 255}, {255,255,255}}), 3500.f));
+                                                                                    Color_Gradient({{255,255,255}}), 0.f));
                 }
                 engine->settings->currentParticleCount += particleSystems.size();
             }
@@ -121,7 +121,7 @@ namespace VeX{
         }
     }
 
-    void Particle_Demo::draw(float delta){
+    void PTM_Shader_Demo::draw(float delta){
         if(drawParticles){
             for(unsigned int i=0; i<particleSystems.size(); i++){
                 particleSystems[i]->draw(delta, *engine->loadShader("particleTextureMap", "assets/shaders/particle_texture_map"));
@@ -138,19 +138,19 @@ namespace VeX{
         engine->displayCurrentParticleCount();
     }
 
-    void Particle_Demo::pause(){
+    void PTM_Shader_Demo::pause(){
         for(unsigned int i=0; i<particleSystems.size(); i++){
             particleSystems[i]->pause();
         }
     }
 
-    void Particle_Demo::resume(){
+    void PTM_Shader_Demo::resume(){
         for(unsigned int i=0; i<particleSystems.size(); i++){
             particleSystems[i]->resume();
         }
     }
 
-    void Particle_Demo::stop(){
+    void PTM_Shader_Demo::stop(){
         engine->settings->currentParticleCount = 0;
     }
 

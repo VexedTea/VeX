@@ -2,8 +2,8 @@
 #define __GRAV_HPP__
 
 #include <vector>
-#include "gravitational_system.hpp"
-#include "circle_object.hpp"
+#include "../gravitational_system.hpp"
+#include "../circle_object.hpp"
 
 namespace VeX{
     enum class Mode{none, placing};

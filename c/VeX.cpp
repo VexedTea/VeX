@@ -8,8 +8,9 @@
 //States
 #include "../h/pause_menu.hpp"
 #include "../h/splash_screen.hpp"
-#include "../h/particle_demo.hpp"
-#include "../h/grav.hpp"
+#include "../h/demo/particle_demo.hpp"
+#include "../h/demo/grav.hpp"
+#include "../h/demo/ptm_shader_demo.hpp"
 
 int main(){
     if (!sf::Shader::isAvailable()){
@@ -32,6 +33,10 @@ int main(){
     pauseMenu->addStateSelection(
         [](){return std::make_unique<VeX::Grav>();},
         {"Grav"}
+    );
+    pauseMenu->addStateSelection(
+        [](){return std::make_unique<VeX::PTM_Shader_Demo>();},
+        {"Particle Texture Mapping Shader Demo"}
     );
     VeX::engine->registerPauseMenu(std::move(pauseMenu));
 

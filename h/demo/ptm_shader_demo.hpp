@@ -1,18 +1,18 @@
-#ifndef __PARTICLE_DEMO_HPP__
-#define __PARTICLE_DEMO_HPP__
+#ifndef __PTM_SHADER_DEMO_HPP__
+#define __PTM_SHADER_DEMO_HPP__
 
 #include <vector>
 #include <memory>
 
-#include "particle.hpp"
+#include "../particle.hpp"
 // #include "particle_system.hpp"
-#include "particle_system_thread.hpp"
-#include "engine.hpp"
-#include "utilities.hpp"
+#include "../particle_system_thread.hpp"
+#include "../engine.hpp"
+#include "../utilities.hpp"
 
 namespace VeX{
 
-    class Particle_Demo : public State{
+    class PTM_Shader_Demo : public State{
     private:
         bool snapToScreenCenter;
         bool circlePaused;
@@ -24,7 +24,7 @@ namespace VeX{
         std::vector<sf::PrimitiveType> primitiveTypes;
         std::vector<std::unique_ptr<Particle_System_Thread>> particleSystems;
     public:
-        Particle_Demo(bool snapToScreenCenter=true, bool circlePaused=false);
+        PTM_Shader_Demo(bool snapToScreenCenter=true, bool circlePaused=false);
 
         void init();
 
@@ -43,4 +43,4 @@ namespace VeX{
 
 } // namespace VeX
 
-#endif // __PARTICLE_DEMO_HPP__
+#endif // __PTM_SHADER_DEMO_HPP__
