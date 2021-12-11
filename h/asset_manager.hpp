@@ -41,6 +41,8 @@ namespace VeX{
 
         void loadTexturesFromFolder(std::vector<std::string> & textureNames, const std::string & folderPath, float & progress, std::mutex & progressMutex);
 
+        void setRepeated(const std::string & name, bool repeated);
+
         const Shader_Ptr & loadVertexShader(const std::string & name, const std::string & fileName);
 
         const Shader_Ptr & loadFragmentShader(const std::string & name, const std::string & fileName);

@@ -77,6 +77,15 @@ namespace VeX{
         }
     }
 
+    void Asset_Manager::setRepeated(const std::string & name, bool repeated){
+        const auto& item = textures.find(name);
+
+        if (item == textures.end()) {
+            std::cerr << "[VeX WARNING] Unable to get asset of type 'Texture' with name '" << name << "'.\n";
+        }
+        item->second.setRepeated(repeated);
+    }
+
     const Shader_Ptr & Asset_Manager::loadVertexShader(const std::string & name, const std::string & fileName){
         const auto& [shader, isKeyNew] = shaders.emplace(name, std::make_shared<sf::Shader>());
 

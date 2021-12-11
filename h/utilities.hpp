@@ -51,6 +51,8 @@ public:
 
 sf::Vector2f vector2iToVector2f(const sf::Vector2i & v);
 
+sf::Vector2f vector2uToVector2f(const sf::Vector2u & v);
+
 float angleRadians(const sf::Vector2f & v);
 
 sf::Vector2f pow(const sf::Vector2f & v, int power);

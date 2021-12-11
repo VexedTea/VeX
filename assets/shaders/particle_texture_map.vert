@@ -1,17 +1,25 @@
-uniform vec2 screenDimensions;
+uniform vec2 screenSize;
 uniform vec2 textureSize;
 
 varying out vec2 texCoord;
 
 void main()
 {   
-    texCoord = vec2(gl_Vertex.x/2560, gl_Vertex.y/1440);
+    texCoord = gl_Vertex / screenSize;
+    texCoord *= screenSize / textureSize;
+    if(textureSize.x > textureSize.y){
+        texCoord *= textureSize.x / screenSize.x;
+        vec2 scale = texCoord / (gl_Vertex / screenSize);
+        texCoord.y -= (0.5 * scale.y) - 0.5;
+    }else{
+        texCoord *= textureSize.y / screenSize.y;
+        vec2 scale = texCoord / (gl_Vertex / screenSize);
+        texCoord.x -= (0.5 * scale.x) - 0.5;
+    }
 
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-    // texCoord = (gl_Position.xy + 1.0) / 2.0;
-    // texCoord.y = 1.0 - texCoord.y;
 
     gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
 
-    gl_FrontColor = vec4(1,1,1,1); //gl_Color;
+    gl_FrontColor = gl_Color;
 }

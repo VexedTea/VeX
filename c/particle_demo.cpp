@@ -62,7 +62,11 @@ namespace VeX{
             particleSystems.push_back(std::make_unique<Particle_System_Thread>());
         }
         auto shader = engine->loadShader("particleTextureMap", "assets/shaders/particle_texture_map");
-        shader->setUniform("texture", engine->loadTexture("testImage", "assets/textures/test_image.png"));
+        const sf::Texture & shaderTexture = engine->loadTexture("testImage", "assets/textures/panda.jpg");
+        engine->setRepeated("testImage", true);
+        shader->setUniform("texture", shaderTexture);
+        shader->setUniform("screenSize", engine->settings->getScreenSize());
+        shader->setUniform("textureSize", vector2uToVector2f(shaderTexture.getSize()));
     }
 
     void Particle_Demo::handleInput(){
@@ -120,7 +124,7 @@ namespace VeX{
     void Particle_Demo::draw(float delta){
         if(drawParticles){
             for(unsigned int i=0; i<particleSystems.size(); i++){
-                particleSystems[i]->draw(delta, *engine->loadVertexShader("particleTextureMap", "assets/shaders/particle_texture_map"));
+                particleSystems[i]->draw(delta, *engine->loadShader("particleTextureMap", "assets/shaders/particle_texture_map"));
             }
         }
         
