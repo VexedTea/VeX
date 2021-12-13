@@ -22,8 +22,10 @@ namespace VeX{
         Particle_System({0,0}, {0,0}, 0.f, {0,0})
     {}
 
-    void Particle_System::draw(float){
-        if(!hidden) engine->window.draw(vertices);
+    void Particle_System::draw(float, const sf::Shader & shader){
+        if(!hidden){
+            engine->window.draw(vertices, &shader);
+        }
     }
 
     void Particle_System::drawCenterPoint(){

@@ -8,10 +8,16 @@
 //States
 #include "../h/pause_menu.hpp"
 #include "../h/splash_screen.hpp"
-#include "../h/particle_demo.hpp"
-#include "../h/grav.hpp"
+#include "../h/demo/particle_demo.hpp"
+#include "../h/demo/grav.hpp"
+#include "../h/demo/ptm_shader_demo.hpp"
 
 int main(){
+    if (!sf::Shader::isAvailable()){
+        std::cout << "Fatal: No shader support on system.\n";
+        exit(1);
+    }
+
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     VeX::engine->window.create(desktop, "VeX", sf::Style::None /*sf::Style::Close | sf::Style::Titlebar | sf::Style::Fullscreen*/);
     sf::Image icon;
@@ -28,10 +34,13 @@ int main(){
         [](){return std::make_unique<VeX::Grav>();},
         {"Grav"}
     );
+    pauseMenu->addStateSelection(
+        [](){return std::make_unique<VeX::PTM_Shader_Demo>();},
+        {"Particle Texture Mapping Shader Demo"}
+    );
     VeX::engine->registerPauseMenu(std::move(pauseMenu));
 
     VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Particle_Demo>()), false);
-    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Grav>()), false);
     VeX::engine->run();
 
     //Can do stuff here to be done when closing, like saving a config/savefile or smth

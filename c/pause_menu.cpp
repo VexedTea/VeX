@@ -10,7 +10,7 @@ namespace VeX{
             sf::Keyboard::Key::Escape, 
             KeybindCondition::OnKeyUp, 
             [&](){
-                engine->pauseMenuOpen = !engine->pauseMenuOpen;std::cout<<"pog";
+                engine->pauseMenuOpen = !engine->pauseMenuOpen;
             }
         );
         background.setTexture(engine->loadTexture("pause_menu_background", "assets/textures/ui/pause_menu_background.png"));

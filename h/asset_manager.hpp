@@ -14,10 +14,13 @@ namespace fs = std::experimental::filesystem;
 
 namespace VeX{
 
+    using Shader_Ptr = std::shared_ptr<sf::Shader>;
+
     class Asset_Manager{
     private:
         sf::Texture blankTexture;
         std::map<std::string, sf::Texture> textures;
+        std::map<std::string, Shader_Ptr> shaders;
     public:
         Asset_Manager();
 
@@ -37,6 +40,14 @@ namespace VeX{
         const sf::Texture & loadTextureFromImage(const std::string & name, const sf::Image & image);
 
         void loadTexturesFromFolder(std::vector<std::string> & textureNames, const std::string & folderPath, float & progress, std::mutex & progressMutex);
+
+        void setRepeated(const std::string & name, bool repeated);
+
+        const Shader_Ptr & loadVertexShader(const std::string & name, const std::string & fileName);
+
+        const Shader_Ptr & loadFragmentShader(const std::string & name, const std::string & fileName);
+
+        const Shader_Ptr & loadShader(const std::string & name, const std::string & fileName);
 
         //Texture factory
         const sf::Texture & makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, const sf::Color & color);

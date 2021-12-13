@@ -35,4 +35,5 @@ clean:
 	@echo "Cleaning up..."
 	del "o\*.o" 
 	del "o\ui\*.o" 
+	del "o\demo\*.o" 
 # the 'del' probably needs to be changed for linux users. This was made for a windows system.

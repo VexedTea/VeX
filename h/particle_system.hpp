@@ -22,7 +22,7 @@ namespace VeX{
 
         Particle_System();
 
-        virtual void draw(float);
+        virtual void draw(float, const sf::Shader & shader);
 
         void drawCenterPoint();
 

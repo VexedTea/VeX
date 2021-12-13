@@ -24,6 +24,9 @@ namespace VeX{
     {}
 
     sf::Color Particle::getColor(){
+        if(gradientEndSpeed == 0.f){
+            return gradient.getFirst();
+        }
         return gradient.getColorAt(sqrt(pow(velocity.x, 2) + pow(velocity.y, 2)) / gradientEndSpeed);
     }
 

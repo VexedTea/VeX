@@ -4,6 +4,10 @@ sf::Vector2f vector2iToVector2f(const sf::Vector2i & v){
     return {static_cast<float>(v.x), static_cast<float>(v.y)};
 }
 
+sf::Vector2f vector2uToVector2f(const sf::Vector2u & v){
+    return {static_cast<float>(v.x), static_cast<float>(v.y)};
+}
+
 float angleRadians(const sf::Vector2f & v){
     float angle = atan2(v.y, v.x)/* *180/3.14159265358979323846 */;
     // if(angle < 0){

@@ -17,6 +17,7 @@ namespace VeX{
     }
 
     const sf::Texture & Asset_Manager::loadTexture(const std::string & name) {
+        std::cout << "This should be deprecated!\n";
         return loadTexture(name, Definition::textures[name]);
     }
 
@@ -76,7 +77,43 @@ namespace VeX{
         }
     }
 
-    //Texture factory
+    void Asset_Manager::setRepeated(const std::string & name, bool repeated){
+        const auto& item = textures.find(name);
+
+        if (item == textures.end()) {
+            std::cerr << "[VeX WARNING] Unable to get asset of type 'Texture' with name '" << name << "'.\n";
+        }
+        item->second.setRepeated(repeated);
+    }
+
+    const Shader_Ptr & Asset_Manager::loadVertexShader(const std::string & name, const std::string & fileName){
+        const auto& [shader, isKeyNew] = shaders.emplace(name, std::make_shared<sf::Shader>());
+
+        if (isKeyNew) {
+            shader->second->loadFromFile(fileName + ".vert", sf::Shader::Vertex);
+        }
+        return shader->second;
+    }
+
+    const Shader_Ptr & Asset_Manager::loadFragmentShader(const std::string & name, const std::string & fileName){
+        const auto& [shader, isKeyNew] = shaders.emplace(name, std::make_shared<sf::Shader>());
+
+        if (isKeyNew) {
+            shader->second->loadFromFile(fileName + ".frag", sf::Shader::Fragment);
+        }
+        return shader->second;
+    }
+
+    const Shader_Ptr & Asset_Manager::loadShader(const std::string & name, const std::string & fileName){
+        const auto& [shader, isKeyNew] = shaders.emplace(name, std::make_shared<sf::Shader>());
+
+        if (isKeyNew) {
+            shader->second->loadFromFile(fileName + ".vert", fileName + ".frag");
+        }
+        return shader->second;
+    }
+
+    //Texture factory // May not be needed anymore, TODO: look at this at some point
     const sf::Texture & Asset_Manager::makeRectangleTexture(const std::string & name, const sf::Vector2i & dimensions, const sf::Color & color){
         sf::Image image;
         image.create(dimensions.x, dimensions.y, color);
