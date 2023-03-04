@@ -11,6 +11,7 @@
 #include "../h/demo/particle_demo.hpp"
 #include "../h/demo/grav.hpp"
 #include "../h/demo/ptm_shader_demo.hpp"
+#include "../h/verlet/verlet_demo.hpp"
 
 int main(){
     if (!sf::Shader::isAvailable()){
@@ -38,9 +39,14 @@ int main(){
         [](){return std::make_unique<VeX::PTM_Shader_Demo>();},
         {"Particle Texture Mapping Shader Demo"}
     );
+    pauseMenu->addStateSelection(
+        [](){return std::make_unique<VeX::Verlet_Demo>();},
+        {"Verlet Physics Solver Demo"}
+    );
     VeX::engine->registerPauseMenu(std::move(pauseMenu));
 
-    VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Particle_Demo>()), false);
+    //VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Particle_Demo>()), false);
+    VeX::engine->addState(std::make_unique<VeX::Splash_Screen>(sf::seconds(1.5), std::make_unique<VeX::Verlet_Demo>()), false);
     VeX::engine->run();
 
     //Can do stuff here to be done when closing, like saving a config/savefile or smth

@@ -49,6 +49,8 @@ public:
     }
 };
 
+float min(const sf::Vector2f & v);
+
 sf::Vector2f vector2iToVector2f(const sf::Vector2i & v);
 
 sf::Vector2f vector2uToVector2f(const sf::Vector2u & v);

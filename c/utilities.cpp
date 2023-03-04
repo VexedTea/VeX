@@ -1,5 +1,13 @@
 #include "../h/utilities.hpp"
 
+float min(const sf::Vector2f & v){
+    if(v.y < v.x){
+        return v.y;
+    }else{
+        return v.x;
+    }
+}
+
 sf::Vector2f vector2iToVector2f(const sf::Vector2i & v){
     return {static_cast<float>(v.x), static_cast<float>(v.y)};
 }
