@@ -6,8 +6,6 @@
 #include "../engine.hpp"
 #include "../utilities.hpp"
 
-#include <iostream>
-
 namespace VeX{
 
     class Verlet_Demo : public State{
@@ -24,9 +22,7 @@ namespace VeX{
 
     public:
         Verlet_Demo()//:
-        {
-            std::cout << "Verlet_Demo contructor";
-        }
+        {}
         
         void init();
         
