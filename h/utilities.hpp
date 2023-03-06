@@ -199,6 +199,19 @@ inline sf::Vector2f operator/(
     return {left.x / right, left.y / right};
 }
 
+// float distance(const sf::Vector2i & point1, const sf::Vector2i & point2){
+//     return sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2));
+// }
+
+// float magnitude(const sf::Vector2i & v){
+//     return distance(v, {0,0});
+// }
+
+// inline bool operator<(
+//     const sf::Vector2i & left,
+//     const sf::Vector2i & right
+// );
+
 std::ostream& operator<<(std::ostream &os, const sf::Vector2f & vec);
 
 std::ostream& operator<<(std::ostream &os, const sf::Vector2i & vec);

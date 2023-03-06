@@ -13,7 +13,7 @@ namespace VeX{
 
     void Verlet_Demo::init(){
         solver.setConstraint(engine->settings->getScreenCenter(), min(engine->settings->getScreenCenter()));
-        solver.setSubStepCount(8);
+        solver.setSubStepCount(1);
         solver.setSimulationUpdateRate(60.f);
 
         objectSpawnDelay = 0.025f;
@@ -23,7 +23,7 @@ namespace VeX{
         objectMinRadius = 1.0f;
         objectMaxRadius = 20.0f;
         maxObjectCount = 1500;
-        maxAngle = 0.1f;
+        maxAngle = 0.5f;
 
         clock.restart();
     }
@@ -31,13 +31,13 @@ namespace VeX{
     void Verlet_Demo::update(float /*delta*/){
         if(solver.getObjectCount() < maxObjectCount && clock.getElapsedTime().asSeconds() >= objectSpawnDelay){
             clock.restart();
-            auto& object = solver.addObject(objectSpawnPosition, 5.f);
+            auto object = solver.addObject(objectSpawnPosition);
             const float time = solver.getTime();
-            float angle = Definition::pi;
-            // float angle = maxAngle * sin(time) + Definition::pi * 0.5;
+            //float angle = Definition::pi;
+            float angle = maxAngle * sin(time) + Definition::pi * 0.5;
             // angle += Definition::pi * 1.f;
             solver.setObjectVelocity(object, objectSpawnSpeed * sf::Vector2f(cos(angle), sin(angle)));
-            object.color = getRainbow(time);
+            object->color = getRainbow(time);
         }
 
         solver.update();
@@ -57,9 +57,9 @@ namespace VeX{
         circle.setOrigin(1.f,1.f);
         const auto& objects = solver.getObjects();
         for(const auto& object : objects){
-            circle.setPosition(object.pos);
-            circle.setScale(object.radius, object.radius);
-            circle.setFillColor(object.color);
+            circle.setPosition(object->pos);
+            circle.setScale(object->radius, object->radius);
+            circle.setFillColor(object->color);
             engine->window.draw(circle);
         }
     }

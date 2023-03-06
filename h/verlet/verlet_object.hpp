@@ -2,6 +2,7 @@
 #define __VERLET_OBJECT_HPP__
 
 #include <SFML/Graphics.hpp>
+#include "../utilities.hpp"
 
 namespace VeX{
 
@@ -39,6 +40,10 @@ namespace VeX{
         [[nodiscard]]
         sf::Vector2f getVelocity(float dt) const {
             return (pos - prevPos) / dt;
+        }
+
+        inline bool operator<(const Verlet_Object & right){
+            return this->radius < right.radius;
         }
     };
 

@@ -54,6 +54,13 @@ sf::Vector2f getPositionOnCircle(const sf::Vector2f & centerPos, float radius, f
     return sf::Vector2f(centerPos.x + (radius*cos(angleDegrees*(3.14159265358979323846/180.f))), centerPos.y + (radius*sin(angleDegrees*(3.14159265358979323846/180.f))));
 }
 
+// inline bool operator<(
+//     const sf::Vector2i & left,
+//     const sf::Vector2i & right
+// ){
+//     return magnitude(left) < magnitude(right);
+// }
+
 std::ostream& operator<<(std::ostream &os, const sf::Vector2f & vec){
     os << "(" << vec.x <<", "<< vec.y << ")";
     return os;
