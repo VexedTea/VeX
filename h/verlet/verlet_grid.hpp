@@ -1,41 +1,48 @@
-#ifndef __GRID_HPP__
-#define __GRID_HPP__
+// #ifndef __GRID_HPP__
+// #define __GRID_HPP__
 
-#include <map>
-#include <vector>
-#include <memory>
-//#include <utility>
-#include <SFML/Graphics.hpp>
-#include "verlet_object.hpp"
-#include "../utilities.hpp"
+// #include <vector>
+// #include <memory>
+// #include <array>
+// #include <SFML/Graphics.hpp>
+// #include "verlet_object.hpp"
+// #include "../utilities.hpp"
 
-namespace VeX{
+// namespace VeX{
 
-    class Verlet_Grid{
-    public:
-        Verlet_Grid(const sf::Vector2f & gridSize, float cellSize, const sf::Vector2f & gridPos);
+//     class Verlet_Grid{
+//     public:
+//         Verlet_Grid(const sf::Vector2f & gridSize, float cellSize, const sf::Vector2f & gridPos);
 
-        void emplace(const std::vector<std::shared_ptr<Verlet_Object>> & objects);
+//         void emplace(std::vector<Verlet_Object> & objects);
 
-        void clear();
+//         void clear();
 
-        void checkCollisions();
+//         void applyGravity();
 
-        void checkCellCollisions(std::vector<std::shared_ptr<Verlet_Object>> & cell1, std::vector<std::shared_ptr<Verlet_Object>> & cell2);
+//         void checkCollisions();
 
-        [[nodiscard]]
-        std::vector<std::shared_ptr<Verlet_Object>> getCellContents(const sf::Vector2i & cellPos);
+//         void checkCellCollisions(std::vector<Verlet_Object> & cell1, std::vector<Verlet_Object> & cell2);
 
-        [[nodiscard]]
-        sf::Vector2i posToCellPos(const sf::Vector2f & pos) const;
+//         void applyConstraint(const sf::Vector2f & constraintCenter);
 
-    private:
-        std::map<int, std::vector<std::shared_ptr<Verlet_Object>>> grid;
-        sf::Vector2i gridDimensions;
-        float cellSize;
-        sf::Vector2f gridPos;
-    };
+//         [[nodiscard]]
+//         std::vector<Verlet_Object> getCellContents(const sf::Vector2i & cellPos);
 
-} // namespace VeX
+//         [[nodiscard]]
+//         sf::Vector2i posToCellPos(const sf::Vector2f & pos) const;
 
-#endif // __GRID_HPP__
+//     private:
+//         sf::Vector2i gridDimensions;
+//         float cellSize;
+//         sf::Vector2f gridPos;
+
+//         std::unique_ptr<std::array<std::array<std::vector<Verlet_Object>, 4096>, 4096>> grid;
+//         std::unique_ptr<std::array<std::array<std::vector<Verlet_Object>, 4096>, 4096>> inactiveGrid;
+
+//         void swapGrids();
+//     };
+
+// } // namespace VeX
+
+// #endif // __GRID_HPP__

@@ -42,10 +42,19 @@ namespace VeX{
             return (pos - prevPos) / dt;
         }
 
-        inline bool operator<(const Verlet_Object & right){
-            return this->radius < right.radius;
+        inline bool operator==(const Verlet_Object & right){
+            return this->pos == right.pos and this->prevPos == right.prevPos;
+        }
+
+        inline bool operator!=(const Verlet_Object & right){
+            return this->pos != right.pos or this->prevPos != right.prevPos;
+        }
+
+        inline bool friend operator==(const Verlet_Object left, const Verlet_Object right){
+            return left.pos == right.pos and left.prevPos == right.prevPos;
         }
     };
+
 
 } // namespace VeX
 

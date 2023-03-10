@@ -1,8 +1,8 @@
 #include "../../h/verlet/verlet_demo.hpp"
 
 namespace VeX{
-    static sf::Color getRainbow(float t)
-    {
+    static sf::Color getRainbow(float t){
+        t = t/8.f;
         const float r = sin(t);
         const float g = sin(t + 0.33f * 2.0f * Definition::pi);
         const float b = sin(t + 0.66f * 2.0f * Definition::pi);
@@ -13,16 +13,16 @@ namespace VeX{
 
     void Verlet_Demo::init(){
         solver.setConstraint(engine->settings->getScreenCenter(), min(engine->settings->getScreenCenter()));
-        solver.setSubStepCount(1);
+        solver.setSubStepCount(8);
         solver.setSimulationUpdateRate(60.f);
 
         objectSpawnDelay = 0.025f;
-        objectSpawnSpeed = 1200.0f * 1.f;
+        objectSpawnSpeed = 1200.0f * 0.75;
         objectSpawnPosition = engine->settings->getScreenCenter();
-        objectSpawnPosition.y = objectSpawnPosition.y/50.f;
+        objectSpawnPosition.y = objectSpawnPosition.y/7.f;
         objectMinRadius = 1.0f;
         objectMaxRadius = 20.0f;
-        maxObjectCount = 1500;
+        maxObjectCount = 15000;
         maxAngle = 0.5f;
 
         clock.restart();
@@ -31,13 +31,26 @@ namespace VeX{
     void Verlet_Demo::update(float /*delta*/){
         if(solver.getObjectCount() < maxObjectCount && clock.getElapsedTime().asSeconds() >= objectSpawnDelay){
             clock.restart();
-            auto object = solver.addObject(objectSpawnPosition);
+            sf::Vector2f offset{100.f, 0.f};
+            auto& object = solver.addObject(objectSpawnPosition + offset);
+            auto& object2 = solver.addObject(objectSpawnPosition - offset);
+            auto& object3 = solver.addObject(objectSpawnPosition);
+            auto& object4 = solver.addObject(objectSpawnPosition - (offset*0.5));
+            auto& object5 = solver.addObject(objectSpawnPosition + (offset*0.5));
             const float time = solver.getTime();
             //float angle = Definition::pi;
             float angle = maxAngle * sin(time) + Definition::pi * 0.5;
             // angle += Definition::pi * 1.f;
             solver.setObjectVelocity(object, objectSpawnSpeed * sf::Vector2f(cos(angle), sin(angle)));
-            object->color = getRainbow(time);
+            object.color = getRainbow(time);
+            solver.setObjectVelocity(object2, objectSpawnSpeed * sf::Vector2f(cos(angle), sin(angle)));
+            object2.color = getRainbow(time);
+            solver.setObjectVelocity(object3, objectSpawnSpeed * sf::Vector2f(cos(angle), sin(angle)));
+            object3.color = getRainbow(time);
+            solver.setObjectVelocity(object4, objectSpawnSpeed * sf::Vector2f(cos(angle), sin(angle)));
+            object4.color = getRainbow(time);
+            solver.setObjectVelocity(object5, objectSpawnSpeed * sf::Vector2f(cos(angle), sin(angle)));
+            object5.color = getRainbow(time);
         }
 
         solver.update();
@@ -56,10 +69,10 @@ namespace VeX{
         circle.setPointCount(32);
         circle.setOrigin(1.f,1.f);
         const auto& objects = solver.getObjects();
-        for(const auto& object : objects){
-            circle.setPosition(object->pos);
-            circle.setScale(object->radius, object->radius);
-            circle.setFillColor(object->color);
+        for(const auto& object : (*objects)){
+            circle.setPosition(object.pos);
+            circle.setScale(object.radius, object.radius);
+            circle.setFillColor(object.color);
             engine->window.draw(circle);
         }
     }

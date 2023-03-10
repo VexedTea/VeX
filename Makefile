@@ -2,7 +2,7 @@
 # make        # compile all binary
 # make clean  # remove ALL binaries and objects
 
-.PHONY = all clean run build
+.PHONY = soheaderscancompile all clean run build
 
 CC = g++.exe
 
@@ -23,13 +23,16 @@ build: VeX
 run: VeX
 	VeX.exe
 
-VeX: $(OBJECTS)
+VeX: soheaderscancompile $(OBJECTS) 
 	@echo "Linking.."
 	${CC} $(CFLAGS) ${LINKERFLAG} $(OBJECTS) -o $@ $(FLAGS) $(RELEASE)
 
 o/%.o: c/%.cpp
 	@echo "Creating object.."
 	${CC} $(CFLAGS) -c $< -o $@ $(FLAGS)
+
+soheaderscancompile:
+	del "o\VeX.o"
 
 clean:
 	@echo "Cleaning up..."

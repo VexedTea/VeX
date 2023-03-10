@@ -20,10 +20,7 @@ namespace VeX{
         float maxAngle;
         sf::Clock clock;
 
-    public:
-        Verlet_Demo()//:
-        {}
-        
+    public:        
         void init();
         
         void handleInput(){
